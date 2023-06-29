@@ -1,0 +1,6 @@
+[submodule ".modules/OTD.EnhancedOutputMode"]
+	path = .modules/OTD.EnhancedOutputMode
+	url = git@github.com:Mrcubix/OTD.EnhancedOutputMode.git
+[submodule ".modules/DialogHost.Avalonia"]
+	path = .modules/DialogHost.Avalonia
+	url = git@github.com:AvaloniaUtils/DialogHost.Avalonia.git

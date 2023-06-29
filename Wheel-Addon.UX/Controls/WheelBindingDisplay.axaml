@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:WheelAddon.UX.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="WheelAddon.UX.Controls.WheelBindingDisplay"
+             x:DataType="vm:WheelBindingDisplayViewModel"
+             x:CompileBindings="true">
+
+    <StackPanel Orientation="Horizontal" Margin="0,16,0,0" >
+        <TextBlock Text="{Binding Description}" FontSize="16" VerticalAlignment="Center" Width="64" />
+        <NumericUpDown Minimum="0" Maximum="360" Value="{Binding Start}" Increment="0.01" Width="120" Height="16" Margin="10,0,0,0" />
+        <NumericUpDown Minimum="0" Maximum="360" Value="{Binding End}" Increment="0.01" Width="120" Height="16" Margin="10,0,0,0" />
+        <Button Content="" Command="{Binding OnShowBindingEditorDialogEvent}" Width="256" Margin="10,0,0,0" />
+        <Button Content="..." Command="{Binding OnShowAdvancedBindingEditorDialogEvent}" Width="30" Margin="10,0,0,0" />
+    </StackPanel>
+
+</UserControl>
