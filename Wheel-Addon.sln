@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wheel-Addon", "Wheel-Addon\Wheel-Addon.csproj", "{20946F8D-D86D-4F3A-B752-26485F4FFC19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wheel-Addon.UX", "Wheel-Addon.UX\Wheel-Addon.UX.csproj", "{1D748E98-A65B-432A-930B-88B399892742}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wheel-Addon.UX.Desktop", "Wheel-Addon.UX.Desktop\Wheel-Addon.UX.Desktop.csproj", "{02861011-72A8-4448-80BE-4EDB4B25F369}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{20946F8D-D86D-4F3A-B752-26485F4FFC19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20946F8D-D86D-4F3A-B752-26485F4FFC19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20946F8D-D86D-4F3A-B752-26485F4FFC19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20946F8D-D86D-4F3A-B752-26485F4FFC19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D748E98-A65B-432A-930B-88B399892742}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D748E98-A65B-432A-930B-88B399892742}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D748E98-A65B-432A-930B-88B399892742}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D748E98-A65B-432A-930B-88B399892742}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02861011-72A8-4448-80BE-4EDB4B25F369}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02861011-72A8-4448-80BE-4EDB4B25F369}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02861011-72A8-4448-80BE-4EDB4B25F369}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02861011-72A8-4448-80BE-4EDB4B25F369}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
