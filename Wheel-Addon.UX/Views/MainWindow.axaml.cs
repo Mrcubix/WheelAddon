@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using OpenTabletDriver.Desktop.Reflection;
 using WheelAddon.UX.Dialogs;
 using WheelAddon.UX.ViewModels;
 

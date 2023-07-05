@@ -1,7 +1,9 @@
+using System;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Interactivity;
 using OpenTabletDriver.Desktop.Reflection;
 using WheelAddon.UX.ViewModels;
 using WheelAddon.UX.Views;
@@ -48,9 +50,9 @@ namespace WheelAddon.UX.Controls
             InitializeComponent();
         }
 
-        protected override void OnLoaded()
+        protected override void OnLoaded(RoutedEventArgs e)
         {
-            base.OnLoaded();
+            base.OnLoaded(e);
 
             var window = TopLevel.GetTopLevel(this) as MainWindow;
 

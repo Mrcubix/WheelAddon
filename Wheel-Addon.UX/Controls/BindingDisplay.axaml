@@ -8,10 +8,15 @@
              x:DataType="vm:BindingDisplayViewModel"
              x:CompileBindings="true">
 
-    <StackPanel Orientation="Horizontal" Margin="0,16,0,0" >
-        <TextBlock Text="{Binding Description}" FontSize="16" VerticalAlignment="Center" Width="250" />
-        <Button Content="" Command="{Binding OnShowBindingEditorDialogEvent}" Width="330" Margin="10,0,0,0" />
-        <Button Content="..." Command="{Binding OnShowAdvancedBindingEditorDialogEvent}" Width="30" Margin="10,0,0,0" />
-    </StackPanel>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="Description" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="{Binding Description}" FontSize="16" VerticalAlignment="Center" Grid.Column="0" />
+        <Button Content="" Command="{Binding OnShowBindingEditorDialogEvent}" HorizontalAlignment="Stretch" FontSize="16" Margin="10,0,0,0" Grid.Column="1" />
+        <Button Content="..." Command="{Binding OnShowAdvancedBindingEditorDialogEvent}" FontSize="16" Margin="10,0,0,0" Grid.Column="2" />
+    </Grid>
 
 </UserControl>

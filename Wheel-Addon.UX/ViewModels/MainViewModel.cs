@@ -1,13 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using ReactiveUI;
+using WheelAddon.UX.Extensions;
 
 namespace WheelAddon.UX.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
     private ObservableCollection<WheelBindingDisplayViewModel> _displays;
+    private ObservableCollection<SliceDisplayViewModel> _slices = null!;
 
     private BindingDisplayViewModel _clockWiseBindingDisplay = null!;
     private BindingDisplayViewModel _counterClockWiseBindingDisplay = null!;
@@ -45,16 +47,26 @@ public class MainViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _displays, value);
     }
 
+    public ObservableCollection<SliceDisplayViewModel> Slices
+    {
+        get => _slices;
+        set => this.RaiseAndSetIfChanged(ref _slices, value);
+    }
+
     public MainViewModel()
     {
         // simple mode binding displays
-        _clockWiseBindingDisplay = new BindingDisplayViewModel();
-        _clockWiseBindingDisplay.Description = "Clockwise Rotation";
-        _clockWiseBindingDisplay.Store = null!;
+        _clockWiseBindingDisplay = new BindingDisplayViewModel
+        {
+            Description = "Clockwise Rotation",
+            Store = null!
+        };
 
-        _counterClockWiseBindingDisplay = new BindingDisplayViewModel();
-        _counterClockWiseBindingDisplay.Description = "Counter Clockwise Rotation";
-        _counterClockWiseBindingDisplay.Store = null!;
+        _counterClockWiseBindingDisplay = new BindingDisplayViewModel
+        {
+            Description = "Counter Clockwise Rotation",
+            Store = null!
+        };
 
         // wheel binding displays
 
@@ -62,28 +74,57 @@ public class MainViewModel : ViewModelBase
         OnSliceAdded = null!;
         OnSliceRemoved = null!;
 
-        var defaultDisplay = new WheelBindingDisplayViewModel();
-        defaultDisplay.Description = "Slice 1";
-        defaultDisplay.Store = null!;
-        defaultDisplay.Start = 0;
-        defaultDisplay.End = 20;
+        var defaultDisplay = new WheelBindingDisplayViewModel
+        {
+            Description = "Slice 1",
+            Store = null!,
+            Start = 0,
+            End = 20,
+            Max = 183
+        };
 
         _displays.Add(defaultDisplay);
+
+        // wheel slices
+
+        _slices = new ObservableCollection<SliceDisplayViewModel>();
+
+        var defaultSlice = new SliceDisplayViewModel(defaultDisplay)
+        {
+            Color = ColorExtensions.RandomColor().ToHex()
+        };
+
+        _slices.Add(defaultSlice);
     }
 
-
-    public event EventHandler<WheelBindingDisplayViewModel> OnSliceAdded;
+    public event EventHandler<SliceDisplayViewModel> OnSliceAdded;
     public event EventHandler<int> OnSliceRemoved;
 
     public void OnSliceAddedEvent()
     {
-        var display = new WheelBindingDisplayViewModel();
-        display.Description = "Slice " + (_displays.Count + 1);
-        display.Store = null!;
+        // get the last slice
+        var lastSlice = _displays[LastIndex];
+
+        // generate a new slice
+        var display = new WheelBindingDisplayViewModel
+        {
+            Description = "Slice " + (_displays.Count + 1),
+            Store = null!,
+            Start = lastSlice.End,
+            End = lastSlice.Max,
+            Max = lastSlice.Max
+        };
 
         _displays.Add(display);
 
-        OnSliceAdded?.Invoke(this, display);
+        var slice = new SliceDisplayViewModel(display)
+        {
+            Color = ColorExtensions.RandomColor().ToHex()
+        };
+
+        _slices.Add(slice);
+
+        OnSliceAdded?.Invoke(this, slice);
 
         LastIndex = _displays.Count - 1;
     }
@@ -93,7 +134,10 @@ public class MainViewModel : ViewModelBase
         if (index < 1 || index >= _displays.Count)
             return;
 
+        // remove the slice
         _displays.RemoveAt(index);
+
+        _slices.RemoveAt(index);
 
         OnSliceRemoved?.Invoke(this, index);
 

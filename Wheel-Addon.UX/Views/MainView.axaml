@@ -8,53 +8,102 @@
              x:Class="WheelAddon.UX.Views.MainView"
              x:DataType="vm:MainViewModel">
 
-  <Design.DataContext>
+    <Design.DataContext>
         <vm:MainViewModel />
-  </Design.DataContext>
+    </Design.DataContext>
 
-  <Grid ColumnDefinitions="*,*" RowDefinitions="*" ShowGridLines="True">
+    <UserControl.Styles>
+        <!-- last element of ItemsControl Name "Slices" need a margin of 0 -->
+        <Style Selector="#Slices > ContentPresenter:nth-last-child(1)" >
+            <Setter Property="Margin" Value="16, 0, 0, 0" />
+        </Style>
+        <!-- any other have a margin of 0, 0, 0, 16 -->
+        <Style Selector="#Slices > ContentPresenter" >
+            <Setter Property="Margin" Value="16, 0, 0, 16" />
+        </Style>
 
-    <!--                     Simple Mode                     -->
+        <!-- Margin for BindingDisplays inside SimpleModeDisplays need to be 0, 16, 0, 0 -->
+        <Style Selector="#SimpleModeDisplays > controls|BindingDisplay" >
+            <Setter Property="Margin" Value="0, 16, 0, 0" />
+        </Style>
+    </UserControl.Styles>
 
-    <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0" Margin="16">
-        <TextBlock Text="Simple Mode" FontSize="20" FontWeight="Bold" />
+    <Grid ColumnDefinitions="*,*">
 
-        <StackPanel Margin="10" MaxWidth="630" Name="SimpleModeDisplays">
-            <controls:BindingDisplay DataContext="{Binding ClockWiseBindingDisplay}" />
-            <controls:BindingDisplay DataContext="{Binding CounterClockWiseBindingDisplay}" />
-        </StackPanel>
-      
-        <StackPanel Orientation="Horizontal" Margin="10,16,0,0">
-            <TextBlock Text="Action Value" FontSize="16" VerticalAlignment="Center" />
-            <Slider Minimum="0" Maximum="100" Value="{Binding ActionValue}" SmallChange="1" LargeChange="10" TickFrequency="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Width="350" Margin="10,0,0,0" />
-            <NumericUpDown Minimum="0" Maximum="100" Value="{Binding ActionValue}" Increment="0.01" Width="200" Height="16" Margin="10,0,0,0" />
-        </StackPanel>
-    </StackPanel>
+        <Grid RowDefinitions="*,*" Grid.Column="0" ShowGridLines="True">
 
-    <!--                     Advanced Mode                     -->
+            <!--                     Simple Mode                     -->
+            <StackPanel Orientation="Vertical" Grid.Row="0" Margin="16" Grid.IsSharedSizeScope="True">
+                <TextBlock Text="Simple Mode" FontSize="20" FontWeight="Bold" />
 
-    <StackPanel Orientation="Vertical"  Margin="16" Grid.Column="1" Grid.Row="0">
-        <TextBlock Text="Advanced Mode" FontSize="20" FontWeight="Bold" />
+                <StackPanel Margin="8" Name="SimpleModeDisplays">
+                    <controls:BindingDisplay DataContext="{Binding ClockWiseBindingDisplay}" />
+                    <controls:BindingDisplay DataContext="{Binding CounterClockWiseBindingDisplay}" />
+                </StackPanel>
+            
+                <Grid ColumnDefinitions="Auto,*,200" Margin="16">
+                    <TextBlock Text="Action Value" FontSize="16" Grid.Column="0" VerticalAlignment="Center" />
+                    <Slider Minimum="0" Maximum="100" Value="{Binding ActionValue}" 
+                            SmallChange="1" LargeChange="10" TickFrequency="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" 
+                            HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="10,0,0,0" Grid.Column="1" />
+                    <NumericUpDown Minimum="0" Maximum="100" Value="{Binding ActionValue}" Increment="0.01" Height="16" 
+                                Margin="10,0,0,0" Grid.Column="2" />
+                </Grid>
+            </StackPanel>
 
-        <ScrollViewer>
-            <ItemsControl ItemsSource="{Binding Displays}" Margin="10" MaxWidth="630">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <controls:WheelBindingDisplay Margin="0, 8, 0, 0" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+            <!--                     Display of Advanced Mode                     -->
+            <Grid RowDefinitions="*" Grid.Row="1" Margin="16">
+                <!-- Containes a shape representing the wheel -->
+                <Canvas Width="200" Height="200" Margin="0, 0, 0, 16" Name="WheelCanvas" Grid.Row="0">
+                    <Ellipse Width="200" Height="200" Stroke="White" StrokeThickness="1" />
+                    <!-- Point at origin 100, 100 -->
+                    <Ellipse Width="4" Height="4" Fill="White" Stroke="White" StrokeThickness="1" Canvas.Left="98" Canvas.Top="98" />
+                </Canvas>
+                <!-- Contains the overlay of the slices -->
+                <!--<Canvas Width="200" Height="200" Margin="0, 0, 0, 16" Name="SliceCanvas" Grid.Row="0">-->
+                    <ItemsControl ItemsSource="{Binding Slices}" Margin="0, 0, 0, 16" Name="SliceCanvas" Grid.Row="0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas Width="200" Height="200" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!--<Path Stroke="Black" StrokeThickness="1" Fill="{Binding Color}" 
+                                    Data="{Binding Data}" />-->
+                                <controls:SliceDisplay />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                <!--</Canvas>-->
+            </Grid>
+            
 
-        <Grid ColumnDefinitions="*,*" Margin="10,16,0,0">
-            <Button Command="{Binding OnSliceAddedEvent}" Margin="10,16,0,0" Grid.Column="0" HorizontalAlignment="Stretch" Background="Green">
-                <TextBlock Text="+" HorizontalAlignment="Center" VerticalAlignment="Center" />
-            </Button>
-            <Button Command="{Binding OnSliceRemovedEvent}" CommandParameter="{Binding LastIndex}" Margin="10,16,0,0" Grid.Column="1" HorizontalAlignment="Stretch" Background="Red" Name="RemoveSliceBtn">
-                <TextBlock Text="-" HorizontalAlignment="Center" VerticalAlignment="Center" />
-            </Button>
-        </Grid> 
-    </StackPanel>
-    
-  </Grid>
+        </Grid>
+
+        <!--                     Advanced Mode                     -->
+
+        <Grid RowDefinitions="Auto,*,Auto" Grid.Column="1" Margin="16">
+            <TextBlock Text="Advanced Mode" FontSize="20" FontWeight="Bold" Grid.Row="0" />
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="0, 8, 0, 0" Grid.IsSharedSizeScope="True">
+                <ItemsControl ItemsSource="{Binding Displays}" Margin="10" Name="Slices">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <controls:WheelBindingDisplay />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <Grid ColumnDefinitions="*,*" Margin="10,0,16,10" Grid.Row="2">
+                <Button Command="{Binding OnSliceAddedEvent}" Margin="10,16,0,0" Grid.Column="0" HorizontalAlignment="Stretch" Background="Green">
+                    <TextBlock Text="+" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Button>
+                <Button Command="{Binding OnSliceRemovedEvent}" CommandParameter="{Binding LastIndex}" Margin="10,16,0,0" Grid.Column="1" HorizontalAlignment="Stretch" Background="Red" Name="RemoveSliceBtn">
+                    <TextBlock Text="-" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Button>
+            </Grid>
+        </Grid>
+    </Grid>
 </UserControl>
