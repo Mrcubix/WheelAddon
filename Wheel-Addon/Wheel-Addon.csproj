@@ -6,7 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\.modules\OTD.EnhancedOutputMode\OTD.EnhancedOutputMode.Lib\OTD.EnhancedOutputMode.Lib.csproj" />
+    <!-- OpenTabletDriver.Desktop -->
+    <!--<ProjectReference Include="../.modules/OTD.EnhancedOutputMode/.modules/OpenTabletDriver/OpenTabletDriver.Desktop/OpenTabletDriver.Desktop.csproj" />-->
+    <!-- OTD.EnhancedOutputMode.Lib -->
+    <ProjectReference Include="../.modules/OTD.EnhancedOutputMode/OTD.EnhancedOutputMode.Lib/OTD.EnhancedOutputMode.Lib.csproj" />
+    <!-- OTD.Backport -->
+    <ProjectReference Include="../.modules/OTD.Backport/src/OTD.Backport.csproj" />
+    <!-- WheelAddon.Lib -->
+    <ProjectReference Include="../Wheel-Addon.Lib/Wheel-Addon.Lib.csproj" />
   </ItemGroup>
 
 </Project>

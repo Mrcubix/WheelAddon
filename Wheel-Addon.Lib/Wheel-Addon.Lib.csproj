@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <NoWarn>NETSDK1138</NoWarn>
+    <NoWarn>VSTHRD200</NoWarn>
+    <RootNamespace>WheelAddon.Lib</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- OpenTabletDriver -->
+    <ProjectReference Include="../.modules/OTD.EnhancedOutputMode/.modules/OpenTabletDriver/OpenTabletDriver.Desktop/OpenTabletDriver.Desktop.csproj" />
+    <!-- Newtonsoft.Json -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+</Project>

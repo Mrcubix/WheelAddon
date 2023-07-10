@@ -4,3 +4,6 @@
 [submodule ".modules/DialogHost.Avalonia"]
 	path = .modules/DialogHost.Avalonia
 	url = git@github.com:AvaloniaUtils/DialogHost.Avalonia.git
+[submodule ".modules/OTD.Backport"]
+	path = .modules/OTD.Backport
+	url = git@github.com:Mrcubix/OTD.Backport.git
