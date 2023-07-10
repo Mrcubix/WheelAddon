@@ -62,7 +62,6 @@ namespace WheelAddon.UX.ViewModels
             _wheelBindingDisplayVM = vm;
 
             // expect an observer as a parameter
-            //Changed.Subscribe(_ => UpdateData());
             vm.Changed.Subscribe(_ => UpdateData());
             
             UpdateData();

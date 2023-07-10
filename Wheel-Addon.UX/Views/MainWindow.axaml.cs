@@ -1,7 +1,7 @@
 using System;
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using WheelAddon.Lib.Serializables;
 using WheelAddon.UX.Dialogs;
 using WheelAddon.UX.ViewModels;
 
@@ -19,14 +19,22 @@ public partial class MainWindow : Window
         // instantiate and show dialog on UI thread
         Dispatcher.UIThread.Post(async () =>
         {
-            var dialog = new BindingEditorDialog
+            if (DataContext is MainViewModel vm)
             {
-                DataContext = e
-            };
+                var dialog = new BindingEditorDialog()
+                {
+                    DataContext = new BindingEditorDialogViewModel(),
+                    Plugins = vm.Plugins
+                };
 
-            var res = await dialog.ShowDialog<BindingEditorDialog>(this);
+                var res = await dialog.ShowDialog<SerializablePluginProperty>(this);
 
-            // do stuff
+                if (res == null)
+                    return;
+
+                e.PluginProperty = res;
+                e.Content = vm.GetFriendlyContentFromProperty(res);
+            }
         });
     }
 

@@ -28,9 +28,14 @@
         </Style>
     </UserControl.Styles>
 
-    <Grid ColumnDefinitions="*,*">
+    <Grid ColumnDefinitions="*,Auto,*,Auto">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-        <Grid RowDefinitions="*,*" Grid.Column="0" ShowGridLines="True">
+        <Grid RowDefinitions="*,Auto,*" Grid.Column="0">
 
             <!--                     Simple Mode                     -->
             <StackPanel Orientation="Vertical" Grid.Row="0" Margin="16" Grid.IsSharedSizeScope="True">
@@ -41,18 +46,20 @@
                     <controls:BindingDisplay DataContext="{Binding CounterClockWiseBindingDisplay}" />
                 </StackPanel>
             
-                <Grid ColumnDefinitions="Auto,*,200" Margin="16">
+                <!--<Grid ColumnDefinitions="Auto,*,200" Margin="16">
                     <TextBlock Text="Action Value" FontSize="16" Grid.Column="0" VerticalAlignment="Center" />
                     <Slider Minimum="0" Maximum="100" Value="{Binding ActionValue}" 
                             SmallChange="1" LargeChange="10" TickFrequency="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" 
                             HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="10,0,0,0" Grid.Column="1" />
                     <NumericUpDown Minimum="0" Maximum="100" Value="{Binding ActionValue}" Increment="0.01" Height="16" 
                                 Margin="10,0,0,0" Grid.Column="2" />
-                </Grid>
+                </Grid>-->
             </StackPanel>
 
+            <Separator Grid.Row="1" />
+
             <!--                     Display of Advanced Mode                     -->
-            <Grid RowDefinitions="*" Grid.Row="1" Margin="16">
+            <Grid RowDefinitions="*" Grid.Row="2" Margin="16">
                 <!-- Containes a shape representing the wheel -->
                 <Canvas Width="200" Height="200" Margin="0, 0, 0, 16" Name="WheelCanvas" Grid.Row="0">
                     <Ellipse Width="200" Height="200" Stroke="White" StrokeThickness="1" />
@@ -60,33 +67,29 @@
                     <Ellipse Width="4" Height="4" Fill="White" Stroke="White" StrokeThickness="1" Canvas.Left="98" Canvas.Top="98" />
                 </Canvas>
                 <!-- Contains the overlay of the slices -->
-                <!--<Canvas Width="200" Height="200" Margin="0, 0, 0, 16" Name="SliceCanvas" Grid.Row="0">-->
-                    <ItemsControl ItemsSource="{Binding Slices}" Margin="0, 0, 0, 16" Name="SliceCanvas" Grid.Row="0">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas Width="200" Height="200" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <!--<Path Stroke="Black" StrokeThickness="1" Fill="{Binding Color}" 
-                                    Data="{Binding Data}" />-->
-                                <controls:SliceDisplay />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                <!--</Canvas>-->
+                <ItemsControl ItemsSource="{Binding Slices}" Margin="0, 0, 0, 16" Name="SliceCanvas" Grid.Row="0">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas Width="200" Height="200" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <controls:SliceDisplay />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Grid>
-            
-
         </Grid>
+
+        <Rectangle Fill="{Binding SeparatorColor}" Height="{Binding $parent.Height}" Width="1" Margin="0, 16" Grid.Column="1" />
 
         <!--                     Advanced Mode                     -->
 
-        <Grid RowDefinitions="Auto,*,Auto" Grid.Column="1" Margin="16">
+        <Grid RowDefinitions="Auto,*,Auto" Grid.Column="2" Margin="16">
             <TextBlock Text="Advanced Mode" FontSize="20" FontWeight="Bold" Grid.Row="0" />
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="0, 8, 0, 0" Grid.IsSharedSizeScope="True">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="0, 8" Grid.IsSharedSizeScope="True" IsEnabled="{Binding !IsEmpty}" IsVisible="{Binding !IsEmpty}">
                 <ItemsControl ItemsSource="{Binding Displays}" Margin="10" Name="Slices">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -96,6 +99,9 @@
                 </ItemsControl>
             </ScrollViewer>
 
+            <TextBlock Text="No Slices Added" FontSize="16" FontWeight="Bold" Grid.Row="1" 
+                       HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="{Binding IsEmpty}" IsVisible="{Binding IsEmpty}" />
+
             <Grid ColumnDefinitions="*,*" Margin="10,0,16,10" Grid.Row="2">
                 <Button Command="{Binding OnSliceAddedEvent}" Margin="10,16,0,0" Grid.Column="0" HorizontalAlignment="Stretch" Background="Green">
                     <TextBlock Text="+" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -104,6 +110,27 @@
                     <TextBlock Text="-" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Button>
             </Grid>
+        </Grid>
+
+        <Separator Grid.Row="1" Grid.ColumnSpan="3" Margin="16, 0" />
+
+        <!-- Connection status, reconnect button if not connect, empty, Apply button, Save button -->
+        <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto" Grid.Row="2" Grid.ColumnSpan="3" Margin="16,8">
+            <StackPanel Orientation="Horizontal" Grid.Column="0">
+                <TextBlock Text="Connection Status:" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding ConnectionStateText}" VerticalAlignment="Center" Margin="8,0,0,0" />
+                <Button Command="{Binding AttemptReconnect}" Margin="8,0,0,0" HorizontalAlignment="Stretch" IsVisible="{Binding !IsConnected}">
+                    <TextBlock Text="Reconnect" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Button>
+            </StackPanel>
+
+            <Button Command="{Binding OnApplyEvent}" Margin="8,0,0,0" HorizontalAlignment="Stretch" Grid.Column="3">
+                <TextBlock Text="Apply" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Button>
+
+            <Button Command="{Binding OnSaveEvent}" Margin="8,0,0,0" HorizontalAlignment="Stretch" Grid.Column="4">
+                <TextBlock Text="Save" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Button>
         </Grid>
     </Grid>
 </UserControl>

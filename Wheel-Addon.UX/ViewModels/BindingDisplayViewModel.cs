@@ -1,15 +1,34 @@
 ﻿using System;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using OpenTabletDriver.Desktop.Reflection;
 using ReactiveUI;
+using WheelAddon.Lib.Serializables;
+using WheelAddon.Lib.Serializables.Bindings;
 
 namespace WheelAddon.UX.ViewModels;
 
 public class BindingDisplayViewModel : ViewModelBase
 {
     private string? _description;
-    private PluginSettingStore? _store;
+    private string? _content;
+    private SerializablePluginProperty? _pluginProperty;
+
+    public BindingDisplayViewModel()
+    {
+        Description = "PlaceHolder";
+        Content = "";
+        PluginProperty = null;
+    }
+
+    public BindingDisplayViewModel(SerializablePluginProperty? pluginProperty)
+    {
+        PluginProperty = pluginProperty;
+    }
+
+    public BindingDisplayViewModel(string description, string content, SerializablePluginProperty? pluginProperty)
+    {
+        Description = description;
+        Content = content;
+        PluginProperty = pluginProperty;
+    }
 
     public string? Description
     {
@@ -17,10 +36,16 @@ public class BindingDisplayViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _description, value);
     }
 
-    public PluginSettingStore? Store
+    public string? Content
     {
-        get => _store;
-        set => this.RaiseAndSetIfChanged(ref _store, value);
+        get => _content;
+        set => this.RaiseAndSetIfChanged(ref _content, value);
+    }
+
+    public SerializablePluginProperty? PluginProperty
+    {
+        get => _pluginProperty;
+        set => this.RaiseAndSetIfChanged(ref _pluginProperty, value);
     }
     
     public event EventHandler<BindingDisplayViewModel>? OnShowBindingEditorDialog;
@@ -34,5 +59,13 @@ public class BindingDisplayViewModel : ViewModelBase
     public void OnShowAdvancedBindingEditorDialogEvent()
     {
         OnShowAdvancedBindingEditorDialog?.Invoke(this, this);
+    }
+
+    public SerializableWheelBinding ToSimpleWheelBinding()
+    {
+        return new SerializableWheelBinding
+        {
+            PluginProperty = PluginProperty
+        };
     }
 }

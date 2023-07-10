@@ -19,6 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Wheel-Addon.UX\Wheel-Addon.UX.csproj" />
+    <ProjectReference Include="../Wheel-Addon.UX/Wheel-Addon.UX.csproj" />
   </ItemGroup>
 </Project>

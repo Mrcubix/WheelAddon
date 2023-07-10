@@ -1,33 +1,39 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Drawing;
+using Avalonia.Media;
+using WheelAddon.Lib.RPC;
 using ReactiveUI;
+using WheelAddon.Lib.Contracts;
+using WheelAddon.Lib.Serializables;
 using WheelAddon.UX.Extensions;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using WheelAddon.Lib.Serializables.Bindings;
 
 namespace WheelAddon.UX.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
+    private RpcClient<IWheelDaemon> _rpcClient = null!;
+    private string _connectionStateText = "Disconnected";
+
     private ObservableCollection<WheelBindingDisplayViewModel> _displays;
     private ObservableCollection<SliceDisplayViewModel> _slices = null!;
+    private int _lastIndex = 0;
+    private bool _isEmpty = true;
 
     private BindingDisplayViewModel _clockWiseBindingDisplay = null!;
     private BindingDisplayViewModel _counterClockWiseBindingDisplay = null!;
 
-    private float _actionValue = 20.0f;
-    private int _lastIndex = 0;
+    private SerializableSettings _settings = null!;
+    private ObservableCollection<SerializablePlugin> _plugins = null!;
 
-    public float ActionValue 
-    {
-        get => _actionValue;
-        set => this.RaiseAndSetIfChanged(ref _actionValue, value);
-    }
+    private bool _isConnected = false;
 
-    public int LastIndex 
-    {
-        get => _lastIndex;
-        set => this.RaiseAndSetIfChanged(ref _lastIndex, value);
-    }
+    public IBrush SeparatorColor { get; } = Brush.Parse("#66FFFFFF");
+
+    #region Simple Bindings
 
     public BindingDisplayViewModel ClockWiseBindingDisplay
     {
@@ -41,6 +47,10 @@ public class MainViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _counterClockWiseBindingDisplay, value);
     }
 
+    #endregion
+
+    #region Ranged Bindings
+
     public ObservableCollection<WheelBindingDisplayViewModel> Displays
     {
         get => _displays;
@@ -53,34 +63,83 @@ public class MainViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _slices, value);
     }
 
-    public MainViewModel()
+    public int LastIndex 
     {
-        // simple mode binding displays
-        _clockWiseBindingDisplay = new BindingDisplayViewModel
-        {
-            Description = "Clockwise Rotation",
-            Store = null!
-        };
+        get => _lastIndex;
+        set => this.RaiseAndSetIfChanged(ref _lastIndex, value);
+    }
 
-        _counterClockWiseBindingDisplay = new BindingDisplayViewModel
-        {
-            Description = "Counter Clockwise Rotation",
-            Store = null!
-        };
+    public bool IsEmpty
+    {
+        get => _isEmpty;
+        set => this.RaiseAndSetIfChanged(ref _isEmpty, value);
+    }
+
+
+    #endregion
+
+    #region RPC
+
+    public RpcClient<IWheelDaemon> Client
+    {
+        get => _rpcClient;
+        set => this.RaiseAndSetIfChanged(ref _rpcClient, value);
+    }
+
+    public string ConnectionStateText
+    {
+        get => _connectionStateText;
+        set => this.RaiseAndSetIfChanged(ref _connectionStateText, value);
+    }
+
+    public bool IsConnected
+    {
+        get => _isConnected;
+        set => this.RaiseAndSetIfChanged(ref _isConnected, value);
+    }
+
+    #endregion
+
+    #region Settings
+
+    public SerializableSettings Settings
+    {
+        get => _settings;
+        set => this.RaiseAndSetIfChanged(ref _settings, value);
+    }
+
+    public ObservableCollection<SerializablePlugin> Plugins
+    {
+        get => _plugins;
+        set => this.RaiseAndSetIfChanged(ref _plugins, value);
+    }
+
+    #endregion
+
+    public MainViewModel() : this(SerializableSettings.Default)
+    {
+        /*// define events
+        OnSliceAdded = null!;
+        OnSliceRemoved = null!;
+
+        // simple mode binding displays
+        ClockWiseBindingDisplay = new BindingDisplayViewModel("Clockwise Rotation", null!);
+        CounterClockWiseBindingDisplay = new BindingDisplayViewModel("Counter Clockwise Rotation", null!);
 
         // wheel binding displays
 
         _displays = new ObservableCollection<WheelBindingDisplayViewModel>();
-        OnSliceAdded = null!;
-        OnSliceRemoved = null!;
+
+        var color = ColorExtensions.RandomColor().ToHex();
 
         var defaultDisplay = new WheelBindingDisplayViewModel
         {
             Description = "Slice 1",
-            Store = null!,
+            PluginProperty = null!,
+            SliceColor = color,
             Start = 0,
             End = 20,
-            Max = 183
+            Max = 71
         };
 
         _displays.Add(defaultDisplay);
@@ -91,35 +150,167 @@ public class MainViewModel : ViewModelBase
 
         var defaultSlice = new SliceDisplayViewModel(defaultDisplay)
         {
-            Color = ColorExtensions.RandomColor().ToHex()
+            Color = color
         };
 
-        _slices.Add(defaultSlice);
+        _slices.Add(defaultSlice);*/
     }
 
+    public MainViewModel(SerializableSettings settings)
+    {
+        // Instantiate RPC client
+        Client = new RpcClient<IWheelDaemon>("WheelDaemon");
+
+        Client.Connected += (sender, args) =>
+        {
+            ConnectionStateText = "Connected";
+        };
+
+        Client.Attached += (sender, args) => Task.Run(async () =>
+        {
+            var tempPlugins = await FetchPluginsAsync();
+
+            if (tempPlugins != null)
+                Plugins = new(tempPlugins);
+
+            OnPluginChanged?.Invoke(this, Plugins);
+
+            var temp = await FetchSettingsAsync();
+
+            if (temp != null)
+                Settings = temp;
+
+            BuildInterface(Settings);
+
+            IsConnected = true;
+        });
+
+        Client.Connecting += (sender, args) =>
+        {
+            ConnectionStateText = "Connecting...";
+        };
+
+        Client.Disconnected += (sender, args) =>
+        {
+            ConnectionStateText = "Disconnected";
+            IsConnected = false;
+        };
+
+        _ = Task.Run(() => Client.ConnectAsync());
+
+        // Set settings
+        Settings = settings;
+
+        // define events
+        OnPluginChanged = null!;
+        OnSliceAdded = null!;
+        OnSliceRemoved = null!;
+
+        _displays = new ObservableCollection<WheelBindingDisplayViewModel>();
+        _slices = new ObservableCollection<SliceDisplayViewModel>();
+
+        // build interface
+        BuildInterface(settings);
+    }
+
+    public void BuildInterface(SerializableSettings settings)
+    {
+        // clear existing displays
+        Displays.Clear();
+        Slices.Clear();
+
+        // simple mode binding displays
+        var simpleModeSettings = settings.SimpleMode;
+
+        ClockWiseBindingDisplay = new BindingDisplayViewModel(  "Clockwise Rotation", 
+                                                                GetFriendlyContentFromProperty(simpleModeSettings?.Clockwise.PluginProperty),
+                                                                simpleModeSettings?.Clockwise.PluginProperty);
+
+        CounterClockWiseBindingDisplay = new BindingDisplayViewModel("Counter Clockwise Rotation", 
+                                                                     GetFriendlyContentFromProperty(simpleModeSettings?.CounterClockwise.PluginProperty), 
+                                                                     simpleModeSettings?.CounterClockwise.PluginProperty);
+
+        // wheel binding displays
+
+        var advancedModeSettings = settings.AdvancedMode;
+
+        if (advancedModeSettings.Count == 0)
+        {
+            IsEmpty = true;
+            return;
+        }
+        
+        for (var i = 0; i < advancedModeSettings.Count; i++)
+        {
+            var advancedSettings = advancedModeSettings[i];
+
+            var display = new WheelBindingDisplayViewModel
+            {
+                Description = $"Slice {i + 1}",
+                Content = GetFriendlyContentFromProperty(advancedSettings.PluginProperty),
+                PluginProperty = advancedSettings.PluginProperty,
+                SliceColor = ColorExtensions.RandomColor().ToHex(),
+                Start = advancedSettings.Start,
+                End = advancedSettings.End,
+                Max = Settings.MaxWheelValue
+            };
+
+            _displays.Add(display);
+
+            IsEmpty = false;
+        }
+
+        // wheel slices
+
+        foreach (var display in _displays)
+        {
+            var slice = new SliceDisplayViewModel(display)
+            {
+                Color = display.SliceColor
+            };
+
+            _slices.Add(slice);
+        }
+    }
+
+    public event EventHandler<ObservableCollection<SerializablePlugin>> OnPluginChanged;
     public event EventHandler<SliceDisplayViewModel> OnSliceAdded;
     public event EventHandler<int> OnSliceRemoved;
 
     public void OnSliceAddedEvent()
     {
+        WheelBindingDisplayViewModel lastSlice = null!;
+
+        var end = Settings.MaxWheelValue;
+        var max = Settings.MaxWheelValue;
+
         // get the last slice
-        var lastSlice = _displays[LastIndex];
+        if (_displays.Count != 0)
+            lastSlice = _displays[LastIndex];
+        else
+        {
+            lastSlice = WheelBindingDisplayViewModel.Default;
+            end = 20;
+        }
+
+        var color = ColorExtensions.RandomColor().ToHex();
 
         // generate a new slice
         var display = new WheelBindingDisplayViewModel
         {
             Description = "Slice " + (_displays.Count + 1),
-            Store = null!,
+            PluginProperty = null!,
+            SliceColor = color,
             Start = lastSlice.End,
-            End = lastSlice.Max,
-            Max = lastSlice.Max
+            End = end,
+            Max = max
         };
 
         _displays.Add(display);
 
         var slice = new SliceDisplayViewModel(display)
         {
-            Color = ColorExtensions.RandomColor().ToHex()
+            Color = color
         };
 
         _slices.Add(slice);
@@ -127,6 +318,7 @@ public class MainViewModel : ViewModelBase
         OnSliceAdded?.Invoke(this, slice);
 
         LastIndex = _displays.Count - 1;
+        IsEmpty = false;
     }
 
     public void OnSliceRemovedEvent(int index)
@@ -142,5 +334,67 @@ public class MainViewModel : ViewModelBase
         OnSliceRemoved?.Invoke(this, index);
 
         LastIndex = _displays.Count - 1;
+        IsEmpty = _displays.Count == 0;
+    }
+
+    public void AttemptReconnect()
+    {
+        _ = Task.Run(() => ConnectRpcAsync());
+    }
+
+    private async Task ConnectRpcAsync()
+    {
+        if (!Client.IsConnected)
+            await Client.ConnectAsync();
+    }
+
+    public void OnApplyEvent()
+    {
+        if (!Client.IsConnected)
+            return;
+
+        //_ = Client.Instance?.ApplyWheelBindings(Settings);
+    }
+
+    public void OnSaveEvent()
+    {
+        if (!Client.IsConnected)
+            return;
+
+        _ = Client.Instance?.SaveWheelBindings();
+    }
+
+    private async Task<List<SerializablePlugin>?> FetchPluginsAsync()
+    {
+        if (!Client.IsConnected)
+            return null;
+
+        return await Client.Instance.GetPlugins();
+    }
+
+    private async Task<SerializableSettings?> FetchSettingsAsync()
+    {
+        if (!Client.IsConnected)
+            return null;
+
+        return await Client.Instance.GetWheelBindings();
+    }
+
+    private string? GetPluginNameFromIdentifier(int identifier)
+    {
+        if (Plugins == null)
+            return null;
+
+        return Plugins.FirstOrDefault(x => x.Identifier == identifier)?.PluginName ?? "Unknown";
+    }
+
+    public string GetFriendlyContentFromProperty(SerializablePluginProperty? property)
+    {
+        if (property == null)
+            return "";
+
+        var pluginName = GetPluginNameFromIdentifier(property.Identifier);
+
+        return $"{pluginName} : {property.Value}";
     }
 }

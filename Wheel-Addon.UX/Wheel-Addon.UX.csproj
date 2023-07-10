@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- OpenTabletDriver -->
-    <ProjectReference Include="../.modules/OTD.EnhancedOutputMode/.modules/OpenTabletDriver/OpenTabletDriver.Desktop/OpenTabletDriver.Desktop.csproj" />
+    <!-- Wheel-Addon.Lib -->
+    <ProjectReference Include="../Wheel-Addon.Lib/Wheel-Addon.Lib.csproj" />
   </ItemGroup>
 </Project>

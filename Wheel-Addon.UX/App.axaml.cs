@@ -15,27 +15,21 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        var mainDataContext = new MainViewModel();
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var mainWindow = new MainWindow
+            desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainViewModel()
+                DataContext = mainDataContext
             };
-
-            //mainWindow.InitializeDataContext();
-
-            desktop.MainWindow = mainWindow;
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
-            var mainView = new MainView
+            singleViewPlatform.MainView = new MainView
             {
-                DataContext = new MainViewModel()
+                DataContext = mainDataContext
             };
-
-            //mainView.InitializeDataContext();
-
-            singleViewPlatform.MainView = mainView;
         }
 
         base.OnFrameworkInitializationCompleted();
