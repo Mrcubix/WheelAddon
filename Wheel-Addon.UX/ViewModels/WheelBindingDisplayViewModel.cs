@@ -20,18 +20,18 @@ public class WheelBindingDisplayViewModel : BindingDisplayViewModel
         PluginProperty = null;
     }
 
-    public WheelBindingDisplayViewModel(SerializablePluginProperty? pluginProperty)
+    public WheelBindingDisplayViewModel(SerializablePluginSettings? pluginProperty)
     {
         PluginProperty = pluginProperty;
     }
 
-    public WheelBindingDisplayViewModel(string description, SerializablePluginProperty? pluginProperty)
+    public WheelBindingDisplayViewModel(string description, SerializablePluginSettings? pluginProperty)
     {
         Description = description;
         PluginProperty = pluginProperty;
     }
 
-    public WheelBindingDisplayViewModel(string description, SerializablePluginProperty? pluginProperty, string color, int start, int end, int max)
+    public WheelBindingDisplayViewModel(string description, SerializablePluginSettings? pluginProperty, string color, int start, int end, int max)
     {
         Description = description;
         PluginProperty = pluginProperty;

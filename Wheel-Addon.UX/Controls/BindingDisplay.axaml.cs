@@ -1,9 +1,6 @@
 using System;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Interactivity;
 using OpenTabletDriver.Desktop.Reflection;
 using WheelAddon.UX.ViewModels;
 using WheelAddon.UX.Views;
@@ -50,16 +47,36 @@ namespace WheelAddon.UX.Controls
             InitializeComponent();
         }
 
-        protected override void OnLoaded(RoutedEventArgs e)
+        protected override void OnDataContextChanged(EventArgs e)
         {
-            base.OnLoaded(e);
+            base.OnDataContextChanged(e);
 
-            var window = TopLevel.GetTopLevel(this) as MainWindow;
-
-            if (window != null && this.DataContext is BindingDisplayViewModel vm)
+            if (DataContext is BindingDisplayViewModel vm)
             {
-                vm.OnShowBindingEditorDialog += (sender, e) => window.ShowBindingEditorDialog(sender, e);
-                vm.OnShowAdvancedBindingEditorDialog += (sender, e) => window.ShowAdvancedBindingEditorDialog(sender, e);
+                vm.OnShowBindingEditorDialog += ShowBindingEditorDialog;
+                vm.OnShowAdvancedBindingEditorDialog += ShowAdvancedBindingEditorDialog;
+            }
+        }
+
+        private void ShowBindingEditorDialog(object? sender, BindingDisplayViewModel e)
+        {
+            if (this.DataContext is BindingDisplayViewModel vm)
+            {
+                if (TopLevel.GetTopLevel(this) is MainWindow window)
+                {
+                    window.ShowBindingEditorDialog(sender, vm);
+                }
+            }
+        }
+
+        private void ShowAdvancedBindingEditorDialog(object? sender, BindingDisplayViewModel e)
+        {
+            if (this.DataContext is BindingDisplayViewModel vm)
+            {
+                if (TopLevel.GetTopLevel(this) is MainWindow window)
+                {
+                    window.ShowAdvancedBindingEditorDialog(sender, vm);
+                }
             }
         }
     }

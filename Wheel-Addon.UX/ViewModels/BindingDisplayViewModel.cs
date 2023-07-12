@@ -9,7 +9,7 @@ public class BindingDisplayViewModel : ViewModelBase
 {
     private string? _description;
     private string? _content;
-    private SerializablePluginProperty? _pluginProperty;
+    private SerializablePluginSettings? _pluginProperty;
 
     public BindingDisplayViewModel()
     {
@@ -18,12 +18,12 @@ public class BindingDisplayViewModel : ViewModelBase
         PluginProperty = null;
     }
 
-    public BindingDisplayViewModel(SerializablePluginProperty? pluginProperty)
+    public BindingDisplayViewModel(SerializablePluginSettings? pluginProperty)
     {
         PluginProperty = pluginProperty;
     }
 
-    public BindingDisplayViewModel(string description, string content, SerializablePluginProperty? pluginProperty)
+    public BindingDisplayViewModel(string description, string content, SerializablePluginSettings? pluginProperty)
     {
         Description = description;
         Content = content;
@@ -42,7 +42,7 @@ public class BindingDisplayViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _content, value);
     }
 
-    public SerializablePluginProperty? PluginProperty
+    public SerializablePluginSettings? PluginProperty
     {
         get => _pluginProperty;
         set => this.RaiseAndSetIfChanged(ref _pluginProperty, value);

@@ -78,7 +78,7 @@ namespace WheelAddon
             return false;
         }
 
-        public static Settings GetDefault() => new();
+        public static Settings Default => new();
 
         public void ConstructBindings()
         {

@@ -4,11 +4,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:WheelAddon.UX.ViewModels"
         mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="450"
-        MaxWidth="350" MaxHeight="250" Width="350" Height="250" 
+        MinWidth="350" MinHeight="250" Width="350" Height="250" 
         x:Class="WheelAddon.UX.Dialogs.BindingEditorDialog"
         x:DataType="vm:BindingEditorDialogViewModel"
         Background="#171C2C"
-        Title="Binding Editor">
+        Title="Binding Editor"
+        WindowStartupLocation="CenterOwner"
+        x:CompileBindings="true">
+        
         
     <Grid RowDefinitions="*, Auto" >
         <Border Margin="5" Grid.Row="0" Background="#1E2738" BorderBrush="#FFFFFF" BorderThickness="1" CornerRadius="5">

@@ -34,7 +34,7 @@ namespace WheelAddon.Serializables.Bindings
 
             return new SerializableWheelBinding()
             {
-                PluginProperty = new SerializablePluginProperty()
+                PluginProperty = new SerializablePluginSettings()
                 {
                     Identifier = identifier.Key,
                     Value = value?.GetValue<string?>()

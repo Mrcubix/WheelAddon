@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using WheelAddon.Lib.Serializables.Bindings;
+using WheelAddon.Lib.Serializables.Modes;
+using Avalonia.Threading;
 
 namespace WheelAddon.UX.ViewModels;
 
@@ -178,9 +180,12 @@ public class MainViewModel : ViewModelBase
             var temp = await FetchSettingsAsync();
 
             if (temp != null)
+            {
                 Settings = temp;
 
-            BuildInterface(Settings);
+                // build the interface on the UI thread
+                Dispatcher.UIThread.Post(() => BuildInterface(Settings));
+            }
 
             IsConnected = true;
         });
@@ -215,10 +220,6 @@ public class MainViewModel : ViewModelBase
 
     public void BuildInterface(SerializableSettings settings)
     {
-        // clear existing displays
-        Displays.Clear();
-        Slices.Clear();
-
         // simple mode binding displays
         var simpleModeSettings = settings.SimpleMode;
 
@@ -232,6 +233,10 @@ public class MainViewModel : ViewModelBase
 
         // wheel binding displays
 
+        // clear existing displays
+        Displays.Clear();
+        Slices.Clear();
+
         var advancedModeSettings = settings.AdvancedMode;
 
         if (advancedModeSettings.Count == 0)
@@ -243,6 +248,8 @@ public class MainViewModel : ViewModelBase
         for (var i = 0; i < advancedModeSettings.Count; i++)
         {
             var advancedSettings = advancedModeSettings[i];
+
+            // wheel binding displays
 
             var display = new WheelBindingDisplayViewModel
             {
@@ -257,19 +264,16 @@ public class MainViewModel : ViewModelBase
 
             _displays.Add(display);
 
-            IsEmpty = false;
-        }
+            // wheel slices
 
-        // wheel slices
-
-        foreach (var display in _displays)
-        {
             var slice = new SliceDisplayViewModel(display)
             {
                 Color = display.SliceColor
             };
 
             _slices.Add(slice);
+
+            IsEmpty = false;
         }
     }
 
@@ -353,7 +357,31 @@ public class MainViewModel : ViewModelBase
         if (!Client.IsConnected)
             return;
 
-        //_ = Client.Instance?.ApplyWheelBindings(Settings);
+        // simple mode settings
+
+        Settings.SimpleMode = new SerializableSimpleModeWheelBindings
+        {
+            Clockwise = new SerializableWheelBinding
+            {
+                PluginProperty = ClockWiseBindingDisplay.PluginProperty
+            },
+
+            CounterClockwise = new SerializableWheelBinding
+            {
+                PluginProperty = CounterClockWiseBindingDisplay.PluginProperty
+            }
+        };
+
+        Settings.AdvancedMode = Displays.Select(x => new SerializableRangedWheelBinding
+        {
+            PluginProperty = x.PluginProperty,
+            Start = x.Start,
+            End = x.End
+        }).ToList();
+
+        // generate the serializable settings
+
+        _ = Client.Instance?.ApplyWheelBindings(Settings);
     }
 
     public void OnSaveEvent()
@@ -388,9 +416,9 @@ public class MainViewModel : ViewModelBase
         return Plugins.FirstOrDefault(x => x.Identifier == identifier)?.PluginName ?? "Unknown";
     }
 
-    public string GetFriendlyContentFromProperty(SerializablePluginProperty? property)
+    public string GetFriendlyContentFromProperty(SerializablePluginSettings? property)
     {
-        if (property == null)
+        if (property == null || property.Identifier == 0)
             return "";
 
         var pluginName = GetPluginNameFromIdentifier(property.Identifier);

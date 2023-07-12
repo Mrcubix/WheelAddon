@@ -2,7 +2,7 @@
 using OpenTabletDriver.Plugin.Attributes;
 using OpenTabletDriver.Plugin.Tablet;
 using OTD.EnhancedOutputMode.Lib.Interface;
-using OTD.Backport.Tablet;
+using OTD.Backport.Parsers.Tablet;
 using System;
 using OpenTabletDriver.Plugin;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace WheelAddon.Filter
         public const string PLUGIN_NAME = "Wheel Addon";
 
         private RpcServer<WheelDaemon> rpcServer;
-        private Settings settings = Settings.GetDefault();
+        private Settings settings = Settings.Default;
 
         private CancellationTokenSource debounceToken = new();
 
@@ -46,11 +46,17 @@ namespace WheelAddon.Filter
 
             // start the RPC server
             rpcServer = new RpcServer<WheelDaemon>("WheelDaemon");
-            _ = Task.Run(() => rpcServer.MainAsync());
 
-            rpcServer.Instance.OnSettingsChanged += (_, _) => {
-                settings = rpcServer.Instance.Settings;
+            rpcServer.Instance.OnSettingsChanged += (_, s) =>
+            {
+                this.settings = s;
+
+                Log.Debug(PLUGIN_NAME, "Settings updated");
             };
+
+            rpcServer.Instance.Initialize();
+
+            _ = Task.Run(() => rpcServer.MainAsync());
         }
 
         public Vector2 Filter(Vector2 input) => input;

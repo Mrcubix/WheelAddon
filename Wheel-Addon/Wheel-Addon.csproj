@@ -11,7 +11,7 @@
     <!-- OTD.EnhancedOutputMode.Lib -->
     <ProjectReference Include="../.modules/OTD.EnhancedOutputMode/OTD.EnhancedOutputMode.Lib/OTD.EnhancedOutputMode.Lib.csproj" />
     <!-- OTD.Backport -->
-    <ProjectReference Include="../.modules/OTD.Backport/src/OTD.Backport.csproj" />
+    <ProjectReference Include="../.modules/OTD.Backport/OTD.Backport.Parsers/OTD.Backport.Parsers.csproj" />
     <!-- WheelAddon.Lib -->
     <ProjectReference Include="../Wheel-Addon.Lib/Wheel-Addon.Lib.csproj" />
   </ItemGroup>

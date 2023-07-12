@@ -9,12 +9,12 @@ namespace WheelAddon.Lib.Serializables.Bindings
             PluginProperty = null;
         }
 
-        public SerializableWheelBinding(SerializablePluginProperty? pluginProperty)
+        public SerializableWheelBinding(SerializablePluginSettings? pluginProperty)
         {
             PluginProperty = pluginProperty;
         }
 
         [JsonProperty("Store")]
-        public SerializablePluginProperty? PluginProperty { get; set; }
+        public SerializablePluginSettings? PluginProperty { get; set; }
     }
 }

@@ -1,4 +1,6 @@
+using System;
 using Avalonia.Controls;
+using WheelAddon.UX.ViewModels;
 
 namespace WheelAddon.UX.Views;
 

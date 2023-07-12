@@ -5,7 +5,7 @@ using System.Reflection;
 using Newtonsoft.Json;
 using OpenTabletDriver.Desktop;
 using OpenTabletDriver.Plugin;
-using OTD.Backport.Tablet;
+using OTD.Backport.Parsers.Tablet;
 using WheelAddon.Filter;
 using WheelAddon.Lib.Contracts;
 using WheelAddon.Lib.Serializables;
@@ -43,8 +43,6 @@ namespace WheelAddon
         {
             OnReady = null!;
             OnSettingsChanged = null!;
-
-            Initialize();
         }
 
         public WheelDaemon(Settings settings)
@@ -69,13 +67,13 @@ namespace WheelAddon
                 return;
             }
 
-            OnSettingsChanged?.Invoke(this, Settings);
-
             // identify plugins
             IdentifyPlugins();
 
             // construct bindings
             Settings.ConstructBindings();
+
+            OnSettingsChanged?.Invoke(this, Settings);
 
             IsReady = true;
             OnReady?.Invoke(this, null!);
@@ -87,7 +85,7 @@ namespace WheelAddon
 
         #endregion
 
-        public Settings Settings { get; private set; } =  Settings.GetDefault();
+        public Settings Settings { get; private set; } =  Settings.Default;
 
         public event EventHandler OnReady;
         public event EventHandler<Settings> OnSettingsChanged;
@@ -140,9 +138,13 @@ namespace WheelAddon
             if (counterClockwisePluginIdentifier != null)
                 simpleModeBindings.CounterClockwise.Store?.Settings.SingleOrDefault(x => x.Property == "Property")!.SetValue(counterClockwisePluginValue!);
 
+            Settings.SimpleMode = simpleModeBindings;
+
             //                                                                                        //
             // ------------------------------- Advanced Mode Bindings ------------------------------- //
             //                                                                                        //
+
+            Settings.AdvancedMode.Clear();
 
             var serializableAdvancedModeBindings = bindings.AdvancedMode;
 
@@ -154,7 +156,9 @@ namespace WheelAddon
                 var advancedModeBinding = new RangedWheelBinding()
                 {
                     Store = pluginIdentifier != null ? 
-                        new PluginSettingStore(identifierToPlugin[pluginIdentifier.Value]) : null
+                        new PluginSettingStore(identifierToPlugin[pluginIdentifier.Value]) : null,
+                    Start = serializableAdvancedModeBinding.Start,
+                    End = serializableAdvancedModeBinding.End
                 };
 
                 if (pluginIdentifier != null)
@@ -162,6 +166,9 @@ namespace WheelAddon
 
                 Settings.AdvancedMode.Add(advancedModeBinding);
             }
+
+            // construct bindings
+            Settings.ConstructBindings();
 
             return Task.FromResult(true);
         }
@@ -293,6 +300,8 @@ namespace WheelAddon
 
         private bool SaveSettings()
         {
+            WheelHandler.HandlerLog(this, NAME, "Saving settings...");
+
             try
             {
                 File.WriteAllText(wheelSettingsPath, JsonConvert.SerializeObject(Settings, serializerSettings));

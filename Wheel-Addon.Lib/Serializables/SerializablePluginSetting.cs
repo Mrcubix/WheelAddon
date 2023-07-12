@@ -1,14 +1,14 @@
 namespace WheelAddon.Lib.Serializables
 {
-    public class SerializablePluginProperty
+    public class SerializablePluginSettings
     {
-        public SerializablePluginProperty()
+        public SerializablePluginSettings()
         {
             Value = null!;
             Identifier = -1;
         }
 
-        public SerializablePluginProperty(string value, int identifier)
+        public SerializablePluginSettings(string value, int identifier)
         {
             Value = value;
             Identifier = identifier;

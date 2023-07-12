@@ -10,7 +10,8 @@ namespace WheelAddon.UX.Dialogs
 {
     public partial class BindingEditorDialog : Window
     {
-        private ObservableCollection<SerializablePlugin> _plugins = null!;
+        protected ObservableCollection<SerializablePlugin> _plugins = null!;
+
         public BindingEditorDialog()
         {
             InitializeComponent();
@@ -37,7 +38,7 @@ namespace WheelAddon.UX.Dialogs
 
             if (DataContext is BindingEditorDialogViewModel vm)
             {
-                vm.CloseRequested += (s, e) => Close(new SerializablePluginProperty()
+                vm.CloseRequested += (s, e) => Close(new SerializablePluginSettings()
                 {
                     Identifier = KeyBindingPlugin?.Identifier ?? -1,
                     Value = "None"
@@ -51,15 +52,11 @@ namespace WheelAddon.UX.Dialogs
             {
                 if (e.Key == Key.Escape)
                 {
-                    Close(new SerializablePluginProperty()
-                    {
-                        Identifier = -1,
-                        Value = "None"
-                    });
+                    Close(null);
                 }
                 else
                 {
-                    Close(new SerializablePluginProperty()
+                    Close(new SerializablePluginSettings()
                     {
                         Identifier = KeyBindingPlugin?.Identifier ?? -1,
                         Value = e.Key.ToString()
@@ -73,7 +70,7 @@ namespace WheelAddon.UX.Dialogs
         protected override void OnPointerPressed(PointerPressedEventArgs e)
         {
             if (DataContext is BindingEditorDialogViewModel vm)
-                Close(new SerializablePluginProperty()
+                Close(new SerializablePluginSettings()
                 {
                     Identifier = MouseBindingPlugin?.Identifier ?? -1,
                     Value = ParseMouseClick(e)

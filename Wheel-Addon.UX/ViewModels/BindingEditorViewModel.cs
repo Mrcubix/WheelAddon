@@ -6,11 +6,11 @@ namespace WheelAddon.UX.ViewModels
 {
     public class BindingEditorDialogViewModel : ViewModelBase
     {
-        private SerializablePluginProperty? _property = null!; 
+        private SerializablePluginSettings? _property = null!; 
 
         public event EventHandler CloseRequested = null!;
 
-        public SerializablePluginProperty? Property
+        public SerializablePluginSettings? Property
         {
             get => _property;
             set => this.RaiseAndSetIfChanged(ref _property, value);

@@ -46,9 +46,9 @@ namespace WheelAddon.Converters
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             // write a JObject with Path, Settings and Enable properties
-            var store = (PluginSetting?)value;
+            var setting = (PluginSetting?)value;
 
-            if (store == null)
+            if (setting == null)
             {
                 writer.WriteNull();
                 return;
@@ -56,9 +56,9 @@ namespace WheelAddon.Converters
 
             var obj = new JObject
             {
-                ["Property"] = store.Property,
-                ["Value"] = store.Value,
-                ["HasValue"] = store.HasValue
+                ["Property"] = setting.Property,
+                ["Value"] = setting.GetValue<string?>(),
+                ["HasValue"] = setting.HasValue
             };
 
             obj.WriteTo(writer);

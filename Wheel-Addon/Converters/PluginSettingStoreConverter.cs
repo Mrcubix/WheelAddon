@@ -76,11 +76,11 @@ namespace WheelAddon.Converters
             var obj = new JObject
             {
                 ["Path"] = store.Path,
-                ["Settings"] = JToken.FromObject(store.Settings),
+                ["Settings"] = JToken.FromObject(store.Settings, serializer),
                 ["Enable"] = store.Enable
             };
 
-            obj.WriteTo(writer);
+            obj.WriteTo(writer, serializer.Converters.ToArray());
         }
     }
 }

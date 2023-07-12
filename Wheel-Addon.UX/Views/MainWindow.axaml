@@ -10,5 +10,5 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="WheelAddon.UX"
         Background="#171C2C">
-        <views:MainView />
+        <views:MainView Name="MainView"/>
 </Window>
