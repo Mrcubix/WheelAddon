@@ -268,7 +268,7 @@ namespace WheelAddon
             if (report.Wheel > Settings.MaxWheelValue)
             {
                 Settings.MaxWheelValue = report.Wheel;
-                WheelHandler.HandlerLog(this, NAME, $"New max wheel value: {Settings.MaxWheelValue}");
+                //WheelHandler.HandlerLog(this, NAME, $"New max wheel value: {Settings.MaxWheelValue}");
             }
         }
 

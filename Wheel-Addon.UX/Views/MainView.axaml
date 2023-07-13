@@ -18,19 +18,11 @@
         <Style Selector="#Slices > ContentPresenter:nth-last-child(1)" >
             <Setter Property="Margin" Value="16, 0, 0, 0" />
         </Style>
+        
         <!-- any other have a margin of 0, 0, 0, 16 -->
         <Style Selector="#Slices > ContentPresenter" >
             <Setter Property="Margin" Value="16, 0, 0, 16" />
         </Style>
-
-        <!-- last element of ItemsRepeater Name "Slices" need a margin of 0, no ContentPresenter -->
-        <!--<Style Selector="#Slices > controls|WheelBindingDisplay:nth-last-child(2)" >
-            <Setter Property="Margin" Value="16, 0, 0, 0" />
-        </Style>-->
-        <!-- any other have a margin of 0, 0, 0, 16 -->
-        <!--<Style Selector="#Slices > controls|WheelBindingDisplay" >
-            <Setter Property="Margin" Value="16, 0, 0, 16" />
-        </Style>-->
 
         <!-- Margin for BindingDisplays inside SimpleModeDisplays need to be 0, 16, 0, 0 -->
         <Style Selector="#SimpleModeDisplays > controls|BindingDisplay" >
@@ -125,13 +117,6 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <!--<ItemsRepeater ItemsSource="{Binding Displays}" Margin="10" Name="Slices">
-                    <ItemsRepeater.ItemTemplate>
-                        <DataTemplate>
-                            <controls:WheelBindingDisplay />
-                        </DataTemplate>
-                    </ItemsRepeater.ItemTemplate>
-                </ItemsRepeater>-->
             </ScrollViewer>
 
             <TextBlock Text="No Slices Added" FontSize="16" FontWeight="Bold" Grid.Row="1" 

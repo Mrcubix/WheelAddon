@@ -13,6 +13,7 @@ using WheelAddon.Lib.Serializables.Bindings;
 using WheelAddon.Lib.Serializables.Modes;
 using Avalonia.Threading;
 using System.IO;
+using System.Threading;
 
 namespace WheelAddon.UX.ViewModels;
 
@@ -36,6 +37,7 @@ public class MainViewModel : ViewModelBase
 
     private bool _isCalibrating = false;
     private string _calibrationButtonText = "Calibrate";
+    private CancellationTokenSource _calibrationCancellationTokenSource = null!;
     private int _currentMax = 0;
 
     public IBrush SeparatorColor { get; } = Brush.Parse("#66FFFFFF");
@@ -190,6 +192,9 @@ public class MainViewModel : ViewModelBase
         {
             ConnectionStateText = "Disconnected";
             IsConnected = false;
+
+            CalibrationButtonText = "Calibrate";
+            IsCalibrating = false;
         };
 
         _ = Task.Run(() => Client.ConnectAsync());
@@ -476,6 +481,10 @@ public class MainViewModel : ViewModelBase
             {
                 IsCalibrating = true;
                 CalibrationButtonText = "Stop Calibration";
+
+                _calibrationCancellationTokenSource = new CancellationTokenSource();
+
+                _ = Task.Run(PeriodicCalibrationTaskAsynch);
             }
         }
         catch (Exception e)
@@ -484,6 +493,21 @@ public class MainViewModel : ViewModelBase
         }
     } 
 
+    public async Task PeriodicCalibrationTaskAsynch()
+    {
+        while (IsConnected && IsCalibrating)
+        {
+            _calibrationCancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+            var res = await Client.Instance.GetMaxWheelValue();
+
+            if (res != -1)
+                CurrentMax = res;
+
+            await Task.Delay(150);
+        }
+    }
+
     public async Task StopCalibrationAsync()
     {
         if (!Client.IsConnected)
@@ -491,6 +515,8 @@ public class MainViewModel : ViewModelBase
 
         if (!IsCalibrating)
             return;
+
+        _calibrationCancellationTokenSource?.Cancel();
 
         int res = -1;
 
@@ -563,6 +589,8 @@ public class MainViewModel : ViewModelBase
                 Console.WriteLine("This error could have occured due to an different version of WheelAddon being used with this Interface.");
 
                 ConnectionStateText = "Disconnected";
+                break;
+            case OperationCanceledException _:
                 break;
             default:
                 Console.WriteLine($"An unhanded exception occured: {e.Message}");

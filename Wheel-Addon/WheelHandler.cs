@@ -91,8 +91,13 @@ namespace WheelAddon.Filter
                         debounceToken = new CancellationTokenSource();
 
                         // start the debounce, call HandleUpDebounce after the debounce time
-                        _ = Task.Delay(DebounceAfterTouch, debounceToken.Token)
-                            .ContinueWith(_ => HandleUpDebounceAsync(report), TaskScheduler.Default);
+                        try
+                        {
+                            _ = Task.Delay(DebounceAfterTouch, debounceToken.Token)
+                                .ContinueWith(_ => HandleUpDebounceAsync(report), TaskScheduler.Default);
+                        }
+                        catch(OperationCanceledException)
+                        {}
                     });
 
                     return;
