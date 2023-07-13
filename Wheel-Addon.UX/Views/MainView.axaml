@@ -49,16 +49,35 @@
         <Grid RowDefinitions="*,Auto,*" Grid.Column="0">
 
             <!--                     Simple Mode                     -->
-            <StackPanel Orientation="Vertical" Grid.Row="0" Margin="16" Grid.IsSharedSizeScope="True">
+            <Grid RowDefinitions="Auto,*,Auto" Grid.Row="0" Margin="16">
 
-                <TextBlock Text="Simple Mode" FontSize="20" FontWeight="Bold" />
+                <StackPanel Grid.Row="0" Margin="16" Grid.IsSharedSizeScope="True">
 
-                <StackPanel Margin="8" Name="SimpleModeDisplays">
-                    <controls:BindingDisplay DataContext="{Binding ClockWiseBindingDisplay}" />
-                    <controls:BindingDisplay DataContext="{Binding CounterClockWiseBindingDisplay}" />
+                    <TextBlock Text="Simple Mode" FontSize="20" FontWeight="Bold" />
+    
+                    <StackPanel Margin="8" Name="SimpleModeDisplays">
+                        <controls:BindingDisplay DataContext="{Binding ClockWiseBindingDisplay}" />
+                        <controls:BindingDisplay DataContext="{Binding CounterClockWiseBindingDisplay}" />
+                    </StackPanel>
+    
                 </StackPanel>
+                
+                <!-- 
+                    Calibration Part :
+                    - "Max Value: [Value]" TextBlock
+                    - "[CalibrationButtonText]" Button
+                -->
+                <Grid ColumnDefinitions ="Auto, Auto, *, Auto" Grid.Row="2">
 
-            </StackPanel>
+                    <TextBlock Text="Max Value: " FontSize="16" FontWeight="Bold" Grid.Column="0" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding CurrentMax}" FontSize="16" FontWeight="Bold" Grid.Column="1" VerticalAlignment="Center" />
+
+                    <Button Command="{Binding ToggleCalibration}" Content="{Binding CalibrationButtonText}" Grid.Column="3" Margin="16, 0, 0, 0" />
+
+                </Grid>
+
+            
+            </Grid>
 
             <Separator Grid.Row="1" />
 

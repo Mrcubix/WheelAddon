@@ -16,7 +16,6 @@ using OpenTabletDriver.Desktop.Reflection;
 using WheelAddon.Serializables.Bindings;
 using WheelAddon.Serializables.Modes;
 using System.Threading.Tasks;
-using System.Threading;
 
 namespace WheelAddon
 {
@@ -227,9 +226,14 @@ namespace WheelAddon
 
         public Task<bool> StartCalibration()
         {
+            WheelHandler.HandlerLog(this, NAME, "Starting calibration...");
+
             Settings.MaxWheelValue = 0;
 
             if (HasErrored)
+                return Task.FromResult(false);
+
+            if (IsCalibrating)
                 return Task.FromResult(false);
 
             this.IsCalibrating = true;
@@ -241,6 +245,8 @@ namespace WheelAddon
 
         public Task<int> StopCalibration()
         {
+            WheelHandler.HandlerLog(this, NAME, "Stopping calibration...");
+
             if (!IsCalibrating)
                 return Task.FromResult(-1);
 
@@ -256,8 +262,14 @@ namespace WheelAddon
 
         private void OnWheelReport(object? sender, IWheelReport report)
         {
+            if (!IsCalibrating)
+                return;
+
             if (report.Wheel > Settings.MaxWheelValue)
+            {
                 Settings.MaxWheelValue = report.Wheel;
+                WheelHandler.HandlerLog(this, NAME, $"New max wheel value: {Settings.MaxWheelValue}");
+            }
         }
 
         #endregion

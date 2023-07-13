@@ -12,8 +12,6 @@ using System.Linq;
 using WheelAddon.Lib.Serializables.Bindings;
 using WheelAddon.Lib.Serializables.Modes;
 using Avalonia.Threading;
-using Avalonia.Logging;
-using System.Runtime.InteropServices.JavaScript;
 using System.IO;
 
 namespace WheelAddon.UX.ViewModels;
@@ -35,6 +33,10 @@ public class MainViewModel : ViewModelBase
     private ObservableCollection<SerializablePlugin> _plugins = null!;
 
     private bool _isConnected = false;
+
+    private bool _isCalibrating = false;
+    private string _calibrationButtonText = "Calibrate";
+    private int _currentMax = 0;
 
     public IBrush SeparatorColor { get; } = Brush.Parse("#66FFFFFF");
 
@@ -80,7 +82,6 @@ public class MainViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _isEmpty, value);
     }
 
-
     #endregion
 
     #region RPC
@@ -121,44 +122,30 @@ public class MainViewModel : ViewModelBase
 
     #endregion
 
+    #region Calibration
+
+    public bool IsCalibrating
+    {
+        get => _isCalibrating;
+        set => this.RaiseAndSetIfChanged(ref _isCalibrating, value);
+    }
+
+    public string CalibrationButtonText
+    {
+        get => _calibrationButtonText;
+        set => this.RaiseAndSetIfChanged(ref _calibrationButtonText, value);
+    }
+
+    public int CurrentMax
+    {
+        get => _currentMax;
+        set => this.RaiseAndSetIfChanged(ref _currentMax, value);
+    }
+
+    #endregion
+
     public MainViewModel() : this(SerializableSettings.Default)
     {
-        /*// define events
-        OnSliceAdded = null!;
-        OnSliceRemoved = null!;
-
-        // simple mode binding displays
-        ClockWiseBindingDisplay = new BindingDisplayViewModel("Clockwise Rotation", null!);
-        CounterClockWiseBindingDisplay = new BindingDisplayViewModel("Counter Clockwise Rotation", null!);
-
-        // wheel binding displays
-
-        _displays = new ObservableCollection<WheelBindingDisplayViewModel>();
-
-        var color = ColorExtensions.RandomColor().ToHex();
-
-        var defaultDisplay = new WheelBindingDisplayViewModel
-        {
-            Description = "Slice 1",
-            PluginProperty = null!,
-            SliceColor = color,
-            Start = 0,
-            End = 20,
-            Max = 71
-        };
-
-        _displays.Add(defaultDisplay);
-
-        // wheel slices
-
-        _slices = new ObservableCollection<SliceDisplayViewModel>();
-
-        var defaultSlice = new SliceDisplayViewModel(defaultDisplay)
-        {
-            Color = color
-        };
-
-        _slices.Add(defaultSlice);*/
     }
 
     public MainViewModel(SerializableSettings settings)
@@ -185,6 +172,7 @@ public class MainViewModel : ViewModelBase
             if (temp != null)
             {
                 Settings = temp;
+                CurrentMax = Settings.MaxWheelValue;
 
                 // build the interface on the UI thread
                 Dispatcher.UIThread.Post(() => BuildInterface(Settings));
@@ -452,6 +440,91 @@ public class MainViewModel : ViewModelBase
         }
         
         return null;
+    }
+
+    public void ToggleCalibration()
+    {
+        if (!Client.IsConnected)
+            return;
+
+        try
+        {
+            if (!IsCalibrating)
+                _ = Task.Run(StartCalibrationAsync);
+            else
+                _ = Task.Run(StopCalibrationAsync);
+        }
+        catch (Exception e)
+        {
+            HandleException(e);
+        }
+    }
+
+    public async Task StartCalibrationAsync()
+    {
+        if (!Client.IsConnected)
+            return;
+
+        if (IsCalibrating)
+            return;
+
+        try
+        {
+            var res = await Client.Instance.StartCalibration();
+
+            if (res == true)
+            {
+                IsCalibrating = true;
+                CalibrationButtonText = "Stop Calibration";
+            }
+        }
+        catch (Exception e)
+        {
+            HandleException(e);
+        }
+    } 
+
+    public async Task StopCalibrationAsync()
+    {
+        if (!Client.IsConnected)
+            return;
+
+        if (!IsCalibrating)
+            return;
+
+        int res = -1;
+
+        try
+        {
+            res = await Client.Instance.StopCalibration();
+        }
+        catch (Exception e)
+        {
+            HandleException(e);
+        }
+
+        IsCalibrating = false;
+        CalibrationButtonText = "Calibrate";
+
+        if (res == -1 || res == 0)
+            return;
+
+        // update the settings
+        Dispatcher.UIThread.Post(() =>
+        {
+            var oldMax = Settings.MaxWheelValue;
+
+            Settings.MaxWheelValue = res;
+            CurrentMax = res;
+            
+            foreach (var display in Displays)
+            {
+                display.Max = res;
+
+                if (display.End == oldMax)
+                    display.End = res;
+            }
+        });
     }
 
     #endregion

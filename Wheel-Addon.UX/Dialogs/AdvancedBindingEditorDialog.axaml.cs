@@ -46,7 +46,7 @@ namespace WheelAddon.UX.Dialogs
                     if (Plugins == null)
                         return;
 
-                    var plugin = Plugins.FirstOrDefault(p => p.PluginName == (string)(TypesComboBox.SelectedItem));
+                    var plugin = Plugins.FirstOrDefault(p => p.PluginName == (string?)(TypesComboBox.SelectedItem));
 
                     if (plugin != null)
                     {
