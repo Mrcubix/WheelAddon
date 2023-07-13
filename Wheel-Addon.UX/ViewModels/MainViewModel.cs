@@ -12,6 +12,9 @@ using System.Linq;
 using WheelAddon.Lib.Serializables.Bindings;
 using WheelAddon.Lib.Serializables.Modes;
 using Avalonia.Threading;
+using Avalonia.Logging;
+using System.Runtime.InteropServices.JavaScript;
+using System.IO;
 
 namespace WheelAddon.UX.ViewModels;
 
@@ -341,6 +344,8 @@ public class MainViewModel : ViewModelBase
         IsEmpty = _displays.Count == 0;
     }
 
+    #region Commands
+
     public void AttemptReconnect()
     {
         _ = Task.Run(() => ConnectRpcAsync());
@@ -349,7 +354,16 @@ public class MainViewModel : ViewModelBase
     private async Task ConnectRpcAsync()
     {
         if (!Client.IsConnected)
-            await Client.ConnectAsync();
+        {
+            try
+            {
+                await Client.ConnectAsync();
+            }
+            catch (Exception e)
+            {
+                HandleException(e);
+            }
+        }
     }
 
     public void OnApplyEvent()
@@ -381,7 +395,14 @@ public class MainViewModel : ViewModelBase
 
         // generate the serializable settings
 
-        _ = Client.Instance?.ApplyWheelBindings(Settings);
+        try
+        {
+            _ = Client.Instance?.ApplyWheelBindings(Settings);
+        }
+        catch (Exception e)
+        {
+            HandleException(e);
+        }
     }
 
     public void OnSaveEvent()
@@ -389,7 +410,14 @@ public class MainViewModel : ViewModelBase
         if (!Client.IsConnected)
             return;
 
-        _ = Client.Instance?.SaveWheelBindings();
+        try
+        {
+            _ = Client.Instance?.SaveWheelBindings();
+        }
+        catch (Exception e)
+        {
+            HandleException(e);
+        }
     }
 
     private async Task<List<SerializablePlugin>?> FetchPluginsAsync()
@@ -397,7 +425,16 @@ public class MainViewModel : ViewModelBase
         if (!Client.IsConnected)
             return null;
 
-        return await Client.Instance.GetPlugins();
+        try 
+        { 
+            return await Client.Instance.GetPlugins(); 
+        }
+        catch (Exception e)
+        {
+            HandleException(e);
+        }
+
+        return null;
     }
 
     private async Task<SerializableSettings?> FetchSettingsAsync()
@@ -405,8 +442,21 @@ public class MainViewModel : ViewModelBase
         if (!Client.IsConnected)
             return null;
 
-        return await Client.Instance.GetWheelBindings();
+        try
+        {
+            return await Client.Instance.GetWheelBindings();
+        }
+        catch (Exception e)
+        {
+            HandleException(e);
+        }
+        
+        return null;
     }
+
+    #endregion
+
+    #region Binding display miscs
 
     private string? GetPluginNameFromIdentifier(int identifier)
     {
@@ -425,4 +475,33 @@ public class MainViewModel : ViewModelBase
 
         return $"{pluginName} : {property.Value}";
     }
+
+    #endregion
+
+    #region Exception Handling
+
+    private void HandleException(Exception e)
+    {
+        switch(e)
+        {
+            case StreamJsonRpc.RemoteRpcException re: 
+                Console.WriteLine($"An Error occured while attempting to connect to the RPC server: {re.Message}");
+                Console.WriteLine("----------------------------------------");
+                Console.WriteLine("This error could have occured due to an different version of WheelAddon being used with this Interface.");
+
+                ConnectionStateText = "Disconnected";
+                break;
+            default:
+                Console.WriteLine($"An unhanded exception occured: {e.Message}");
+
+                // write the exception to a file
+                File.WriteAllText("exception.txt", e.ToString());
+
+                Console.WriteLine("The exception has been written to exception.txt");
+
+                break;
+        }
+    }
+
+    #endregion
 }

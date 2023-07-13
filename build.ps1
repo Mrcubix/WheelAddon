@@ -20,6 +20,7 @@ Move-Item ./temp/plugin/Wheel-Addon.Lib.dll ./build/plugin/Wheel-Addon.Lib.dll
 Move-Item ./temp/plugin/Wheel-Addon.Lib.pdb ./build/plugin/Wheel-Addon.Lib.pdb
 Move-Item ./temp/plugin/OTD.Backport.Parsers.dll ./build/plugin/OTD.Backport.Parsers.dll
 Move-Item ./temp/plugin/Newtonsoft.Json.dll ./build/plugin/Newtonsoft.Json.dll
+Move-Item ./temp/plugin/StreamJsonRpc.dll ./build/plugin/StreamJsonRpc.dll
 
 Remove-Item ./temp/ -Recurse -Force
 

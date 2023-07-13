@@ -5,17 +5,15 @@ using OTD.EnhancedOutputMode.Lib.Interface;
 using OTD.Backport.Parsers.Tablet;
 using System;
 using OpenTabletDriver.Plugin;
-using System.Linq;
 using OpenTabletDriver.Plugin.Logging;
 using System.Threading.Tasks;
 using System.Threading;
 using WheelAddon.RPC;
-using OpenTabletDriver.Vendors.XP_Pen;
 
 namespace WheelAddon.Filter
 {
     [PluginName(PLUGIN_NAME)]
-    public class WheelHandler : IFilter, IAuxFilter
+    public class WheelHandler : IFilter, IAuxFilter, IDisposable
     {
         public const string PLUGIN_NAME = "Wheel Addon";
 
@@ -33,6 +31,7 @@ namespace WheelAddon.Filter
         public bool Touching { get; set; }
         public int Delta { get; set; }
         public int LastValue { get; set; } = -1;
+        public int LastNonNullValue { get; set; } = -1;
         public int RemainingTouchesDebounce { get; set; } = -1;
 
         public WheelHandler()
@@ -105,8 +104,8 @@ namespace WheelAddon.Filter
             }
             else
             {
-                if (LastValue == -1 && RemainingTouchesDebounce < 0)
-                    Log.Debug(PLUGIN_NAME, "Wheel: Finger Down");
+                //if (LastValue == -1 && RemainingTouchesDebounce < 0)
+                    //Log.Debug(PLUGIN_NAME, "Wheel: Finger Down");
 
                 Touching = true;
 
@@ -115,6 +114,7 @@ namespace WheelAddon.Filter
 
                 // reset the debounce
                 RemainingTouchesDebounce = DebounceDuringTouch;
+                LastNonNullValue = report.Wheel;
             }
 
             LastValue = report.Wheel;
@@ -124,7 +124,7 @@ namespace WheelAddon.Filter
         {
             if (LastValue == -1)
             {
-                Log.Debug(PLUGIN_NAME, "Wheel: Finger Up");
+                //Log.Debug(PLUGIN_NAME, "Wheel: Finger Up");
 
                 OnWheelFingerUp?.Invoke(this, report);
 
@@ -164,14 +164,14 @@ namespace WheelAddon.Filter
                 Delta += report.Wheel - LastValue;
             }
 
-            Log.Debug(PLUGIN_NAME, $"Wheel: Delta: {Delta}");
+            //Log.Debug(PLUGIN_NAME, $"Wheel: Delta: {Delta}");
 
             // in the case Delta is greater than the RotationThreshold, we need to send the events
             var actionsToExecute = Math.Abs(Delta) / RotationThreshold;
 
             if (actionsToExecute > 0)
             {
-                Log.Debug(PLUGIN_NAME, $"Wheel: Was rotated {actionsToExecute} times {((Delta > 0) ? "clockwise" : "counter-clockwise")}");
+                //Log.Debug(PLUGIN_NAME, $"Wheel: Was rotated {actionsToExecute} times {((Delta > 0) ? "clockwise" : "counter-clockwise")}");
 
                 for (var i = 0; i < actionsToExecute; i++)
                 {
@@ -219,7 +219,7 @@ namespace WheelAddon.Filter
             {
                 var slice = advancedMode[i];
 
-                if (slice.Start <= LastValue && slice.End >= LastValue)
+                if (slice.End >= LastNonNullValue && LastNonNullValue >= slice.Start)
                 {
                     // check if there is already a binding defined
                     if (foundAtIndex != -1)
@@ -282,6 +282,21 @@ namespace WheelAddon.Filter
         public static void HandlerLogSpacer(object? sender, string group)
         {
             OnLog?.Invoke(sender, new LogMessage(group, "----------------------------------------", LogLevel.Info));
+        }
+
+        public void Dispose()
+        {
+            // unsubscribe from the events
+            OnLog -= OnLogSent;
+            OnWheelAction -= HandleSimpleModeAction;
+            OnWheelFingerUp -= HandleAdvancedMode;
+
+            // dispose of the settings
+            settings = null!;
+
+            // dispose of the rpc server
+            rpcServer?.Dispose();
+            rpcServer = null!;
         }
 
         #endregion

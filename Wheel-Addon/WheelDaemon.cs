@@ -16,10 +16,11 @@ using OpenTabletDriver.Desktop.Reflection;
 using WheelAddon.Serializables.Bindings;
 using WheelAddon.Serializables.Modes;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace WheelAddon
 {
-    public class WheelDaemon : IWheelDaemon
+    public class WheelDaemon : IWheelDaemon, IDisposable
     {
         private const string NAME = WheelHandler.PLUGIN_NAME + " Daemon";
 
@@ -212,8 +213,10 @@ namespace WheelAddon
 
             if (HasErrored)
                 return Task.FromResult<SerializableSettings?>(null!);
+
+            var serializedSettings = Settings.ToSerializable(identifierToPlugin);
             
-            return Task.FromResult<SerializableSettings?>(Settings.ToSerializable(identifierToPlugin));
+            return Task.FromResult<SerializableSettings?>(serializedSettings);
         }
 
         public Task<bool> SaveWheelBindings() => Task.FromResult(SaveSettings());
@@ -313,6 +316,13 @@ namespace WheelAddon
             }
 
             return false;
+        }
+
+        public void Dispose()
+        {
+            IsReady = false;
+            identifierToPlugin.Clear();
+            Settings = null!;
         }
 
         #endregion
