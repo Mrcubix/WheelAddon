@@ -484,7 +484,7 @@ public class MainViewModel : ViewModelBase
 
                 _calibrationCancellationTokenSource = new CancellationTokenSource();
 
-                _ = Task.Run(PeriodicCalibrationTaskAsynch);
+                _ = Task.Run(PeriodicCalibrationTaskAsync);
             }
         }
         catch (Exception e)
@@ -493,7 +493,7 @@ public class MainViewModel : ViewModelBase
         }
     } 
 
-    public async Task PeriodicCalibrationTaskAsynch()
+    public async Task PeriodicCalibrationTaskAsync()
     {
         while (IsConnected && IsCalibrating)
         {
