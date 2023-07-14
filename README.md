@@ -30,7 +30,7 @@ A plugin for OTD that add support for the touch wheel present in some Wacom tabl
 
 Windows: `Wheel-Addon.UX-win-x64.exe`
 Linux: `Wheel-Addon.UX-linux-x64`
-MacOS: `Wheel-Addon.UX-osx-x64`
+~~MacOS: `Wheel-Addon.UX-osx-x64`~~
 
 2. Run the binary
 
