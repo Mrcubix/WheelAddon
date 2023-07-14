@@ -338,7 +338,7 @@ namespace WheelAddon.Filter
 
         [Property("Debounce During Touch"),
          Unit("packets"),
-         DefaultPropertyValue(1),
+         DefaultPropertyValue(3),
          ToolTip("Wheel Addon:\n\n" +
                  "The number packets to debounce after releasing the wheel. \n\n" +
                  "Modifying this value could solve issues with unwanted actions.")
@@ -347,7 +347,7 @@ namespace WheelAddon.Filter
 
         [Property("Debounce After Touch"),
          Unit("ms"),
-         DefaultPropertyValue(30),
+         DefaultPropertyValue(120),
          ToolTip("Wheel Addon:\n\n" +
                  "The number ms to debounce after touching the wheel. \n\n" +
                  "Modifying this value could solve issues with unwanted actions.")
