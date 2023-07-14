@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wheel-Addon.UX.Desktop", "W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wheel-Addon.Lib", "Wheel-Addon.Lib\Wheel-Addon.Lib.csproj", "{D0275EA1-9D69-4092-8699-68F9C7DFBAE1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wheel-Addon.Installer", "Wheel-Addon.Installer\Wheel-Addon.Installer.csproj", "{46C0247D-C71A-48FE-8AAF-85A28A464BE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{D0275EA1-9D69-4092-8699-68F9C7DFBAE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0275EA1-9D69-4092-8699-68F9C7DFBAE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0275EA1-9D69-4092-8699-68F9C7DFBAE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46C0247D-C71A-48FE-8AAF-85A28A464BE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46C0247D-C71A-48FE-8AAF-85A28A464BE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46C0247D-C71A-48FE-8AAF-85A28A464BE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46C0247D-C71A-48FE-8AAF-85A28A464BE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -4,7 +4,7 @@ echo ""
 echo "Building Plugin"
 echo ""
 
-dotnet publish ./Wheel-Addon/Wheel-Addon.csproj -c Release -o ./temp/plugin/
+dotnet publish Wheel-Addon -c Release -o ./temp/plugin/
 
 # if error is 0 then exit
 if [ $? -eq 0 ]; then
@@ -26,7 +26,9 @@ mv ./temp/plugin/OTD.Backport.Parsers.dll ./build/plugin/OTD.Backport.Parsers.dl
 mv ./temp/plugin/Newtonsoft.Json.dll ./build/plugin/Newtonsoft.Json.dll
 mv ./temp/plugin/StreamJsonRpc.dll ./build/plugin/StreamJsonRpc.dll
 
-rm -rf ./temp
+rm -rf ./temp/plugin
+
+zip -r ./build/plugin/Wheel-Addon.zip ./build/plugin/*
 
 echo ""
 echo "Building UX"
@@ -41,3 +43,29 @@ else
     echo "Build Failed"
     exit 1
 fi
+
+echo ""
+echo "Building Installer"
+echo ""
+
+dotnet publish Wheel-Addon.Installer -c Release -o ./temp/installer/
+
+# if error is 0 then exit
+if [ $? -eq 0 ]; then
+    echo ""
+else
+    echo "Build Failed"
+    exit 1
+fi
+
+mkdir ./build/installer/
+
+rm -rf ./build/installer/*
+
+mv ./temp/installer/Wheel-Addon.Installer.dll ./build/installer/Wheel-Addon.Installer.dll
+
+rm -rf ./temp
+
+echo ""
+echo "Done"
+echo ""

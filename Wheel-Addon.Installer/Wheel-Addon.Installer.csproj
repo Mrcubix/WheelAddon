@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <NoWarn>NETSDK1138</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- OpenTabletDriver.Desktop -->
+    <ProjectReference Include="../.modules/OTD.EnhancedOutputMode/.modules/OpenTabletDriver/OpenTabletDriver.Desktop/OpenTabletDriver.Desktop.csproj" />
+    <!-- OpenTabletDriver.Plugin -->
+    <ProjectReference Include="../.modules/OTD.EnhancedOutputMode/.modules/OpenTabletDriver/OpenTabletDriver.Plugin/OpenTabletDriver.Plugin.csproj" />
+  </ItemGroup>
+
+  <!-- embed ressource /build/plugin/Wheel-Addon.zip -->
+  <ItemGroup>
+    <EmbeddedResource Include="../build/plugin/Wheel-Addon.zip" />
+  </ItemGroup>
+
+</Project>
