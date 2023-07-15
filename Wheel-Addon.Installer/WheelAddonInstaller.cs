@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using OpenTabletDriver.Plugin;
 using OpenTabletDriver.Plugin.Attributes;
-using OpenTabletDriver.Desktop;
 using System.IO;
 using System.IO.Compression;
 using System.Threading;
@@ -14,13 +13,24 @@ namespace WheelAddon.Installer
     {
         private static readonly Assembly assembly = Assembly.GetExecutingAssembly();
 
-        private static readonly DirectoryInfo pluginsDirectory = AppInfo.PluginManager.PluginDirectory;
+        private static readonly FileInfo location = new(assembly.Location);
+        private static readonly DirectoryInfo? pluginsDirectory = location.Directory?.Parent;
 
-        private static readonly string OTDEnhancedOutputModeDirectoryPath = $"{pluginsDirectory}/OTD.EnhancedOutputMode";
-        private readonly DirectoryInfo OTDEnhancedOutputModeDirectory = new(OTDEnhancedOutputModeDirectoryPath);
+        private readonly DirectoryInfo OTDEnhancedOutputModeDirectory = null!;
 
         private const string dependenciesResourcePath = "Wheel-Addon.Installer.Wheel-Addon.zip";
         private const string group = "Wheel Addon Installer";
+
+        public WheelAddonInstaller()
+        {
+            if (pluginsDirectory == null || !pluginsDirectory.Exists)
+            {
+                Log.Write(group, "Failed to get plugins directory.", LogLevel.Error);
+                return;
+            }
+
+            OTDEnhancedOutputModeDirectory = new($"{pluginsDirectory}/OTD.EnhancedOutputMode");
+        }
 
         public bool Initialize()
         {
@@ -30,6 +40,18 @@ namespace WheelAddon.Installer
 
         public bool Install(Assembly assembly, string group, string resourcePath, DirectoryInfo destinationDirectory, bool forceInstall = false)
         {
+            if (pluginsDirectory == null || !pluginsDirectory.Exists)
+            {
+                Log.Write(group, "Failed to get plugins directory.", LogLevel.Error);
+                return false;
+            }
+
+            if (!OTDEnhancedOutputModeDirectory.Exists)
+            {
+                Log.Write(group, "OTD.EnhancedOutputMode is not installed.", LogLevel.Error);
+                return false;
+            }
+
             var dependencies = assembly.GetManifestResourceStream(resourcePath);
 
             if (dependencies == null)
