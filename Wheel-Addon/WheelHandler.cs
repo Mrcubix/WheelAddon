@@ -46,12 +46,7 @@ namespace WheelAddon.Filter
             // start the RPC server
             rpcServer = new RpcServer<WheelDaemon>("WheelDaemon");
 
-            rpcServer.Instance.OnSettingsChanged += (_, s) =>
-            {
-                this.settings = s;
-
-                Log.Debug(PLUGIN_NAME, "Settings updated");
-            };
+            rpcServer.Instance.OnSettingsChanged += OnSettingsChanged;
 
             rpcServer.Instance.Initialize();
 
@@ -289,22 +284,37 @@ namespace WheelAddon.Filter
             OnLog?.Invoke(sender, new LogMessage(group, "----------------------------------------", LogLevel.Info));
         }
 
+        #endregion
+
+        #region Other events
+
+        public void OnSettingsChanged(object? sender, Settings s)
+        {
+            this.settings = s;
+
+            Log.Debug(PLUGIN_NAME, "Settings updated");
+        }
+
+        #endregion
+
         public void Dispose()
         {
             // unsubscribe from the events
             OnLog -= OnLogSent;
+
+            OnWheelUsage -= OnWheelUsed;
             OnWheelAction -= HandleSimpleModeAction;
             OnWheelFingerUp -= HandleAdvancedMode;
 
             // dispose of the settings
             settings = null!;
 
+            rpcServer.Instance.OnSettingsChanged -= OnSettingsChanged;
+
             // dispose of the rpc server
             rpcServer?.Dispose();
             rpcServer = null!;
         }
-
-        #endregion
 
         public FilterStage FilterStage => FilterStage.PreTranspose;
 
