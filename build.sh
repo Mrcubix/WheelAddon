@@ -119,10 +119,10 @@ echo ""
     output="../hashes.txt"
 
     (
-        cd ./plugin
+        cd ./installer
 
         # Compute Plugin Hash
-        sha256sum Wheel-Addon.zip > $output
+        sha256sum Wheel-Addon.Installer.zip > $output
     )
 
     echo "" >> hashes.txt
