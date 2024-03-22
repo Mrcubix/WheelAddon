@@ -11,6 +11,11 @@
     <TrimUnusedDependencies>true</TrimUnusedDependencies>
   </PropertyGroup>
 
+  <!-- Only Embed PDBs in Release -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>

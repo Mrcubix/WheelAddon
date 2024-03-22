@@ -11,6 +11,10 @@
     <TrimMode>Link</TrimMode>
   </PropertyGroup>
 
+  <!-- Only Embed PDBs in Release -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
   
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
