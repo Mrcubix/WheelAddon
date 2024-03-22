@@ -71,8 +71,10 @@ namespace WheelAddon.Filter
             if (rpcServer.Instance.IsCalibrating || rpcServer.Instance.HasErrored)
                 return;
 
+            // Wheel isn't in use (anymore?)
             if (report.Wheel == -1)
             {
+                // We need a debounce mechanism to detect when the wheel is no longer in use
                 if (RemainingTouchesDebounce-- > 0)
                 {
                     LastValue = -1;
@@ -206,6 +208,7 @@ namespace WheelAddon.Filter
 
         public void HandleAdvancedMode(object? sender, IWheelReport report)
         {
+            // if the mode is not Advanced (true), return
             if (ModeToggle != true)
                 return;
 

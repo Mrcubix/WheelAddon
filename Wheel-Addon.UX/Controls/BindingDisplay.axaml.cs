@@ -1,7 +1,5 @@
 using System;
-using Avalonia;
 using Avalonia.Controls;
-using OpenTabletDriver.Desktop.Reflection;
 using WheelAddon.UX.ViewModels;
 using WheelAddon.UX.Views;
 
@@ -9,7 +7,7 @@ namespace WheelAddon.UX.Controls
 {
     public partial class BindingDisplay : UserControl
     {
-        private string? _description;
+        /*private string? _description;
         private PluginSettingStore? _store;
 
         // --------------------------------- Description --------------------------------- //
@@ -38,7 +36,7 @@ namespace WheelAddon.UX.Controls
         {
             get => _store;
             set => this.SetAndRaise(StoreProperty, ref _store, value);
-        }
+        }*/
 
         // --------------------------------- Constructor --------------------------------- //
 
@@ -60,7 +58,7 @@ namespace WheelAddon.UX.Controls
 
         private void ShowBindingEditorDialog(object? sender, BindingDisplayViewModel e)
         {
-            if (this.DataContext is BindingDisplayViewModel vm)
+            if (DataContext is BindingDisplayViewModel vm)
             {
                 if (TopLevel.GetTopLevel(this) is MainWindow window)
                 {
@@ -71,7 +69,7 @@ namespace WheelAddon.UX.Controls
 
         private void ShowAdvancedBindingEditorDialog(object? sender, BindingDisplayViewModel e)
         {
-            if (this.DataContext is BindingDisplayViewModel vm)
+            if (DataContext is BindingDisplayViewModel vm)
             {
                 if (TopLevel.GetTopLevel(this) is MainWindow window)
                 {

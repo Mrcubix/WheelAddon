@@ -110,6 +110,7 @@ namespace WheelAddon
 
             var serializableSimpleModeBindings = bindings.SimpleMode;
 
+            // Grab the plugin identifiers and values
             var clockwisePluginIdentifier = serializableSimpleModeBindings.Clockwise.PluginProperty?.Identifier;
             var counterClockwisePluginIdentifier = serializableSimpleModeBindings.CounterClockwise.PluginProperty?.Identifier;
 
@@ -146,6 +147,7 @@ namespace WheelAddon
 
             Settings.AdvancedMode.Clear();
 
+            // Grab the plugin identifiers and values for each advanced mode binding
             var serializableAdvancedModeBindings = bindings.AdvancedMode;
 
             foreach (var serializableAdvancedModeBinding in serializableAdvancedModeBindings)
@@ -153,6 +155,7 @@ namespace WheelAddon
                 var pluginIdentifier = serializableAdvancedModeBinding.PluginProperty?.Identifier;
                 var pluginValue = serializableAdvancedModeBinding.PluginProperty?.Value;
 
+                // convert the advanced mode bindings
                 var advancedModeBinding = new RangedWheelBinding()
                 {
                     Store = pluginIdentifier != null ? 
@@ -161,6 +164,7 @@ namespace WheelAddon
                     End = serializableAdvancedModeBinding.End
                 };
 
+                // set the properties values of each stores settings
                 if (pluginIdentifier != null)
                     advancedModeBinding.Store?.Settings.SingleOrDefault(x => x.Property == "Property")!.SetValue(pluginValue!);
 
@@ -179,14 +183,17 @@ namespace WheelAddon
 
             List<SerializablePlugin> plugins = new();
 
+            // iterate through each plugin and add it to the list
             foreach (var IdentifierPluginPair in identifierToPlugin)
             {
                 var plugin = IdentifierPluginPair.Value;
 
                 var store = new PluginSettingStore(plugin);
 
+                // Construct the binding plugin so we can get the valid properties
                 var validateBinding = store.Construct<IValidateBinding>();
 
+                // Convert the plugin to a serializable plugin, so it can be transferred over RPC
                 var serializablePlugin = new SerializablePlugin(plugin.GetCustomAttribute<PluginNameAttribute>()?.Name, 
                                                                 plugin.FullName, 
                                                                 IdentifierPluginPair.Key, 
@@ -268,7 +275,9 @@ namespace WheelAddon
             if (report.Wheel > Settings.MaxWheelValue)
             {
                 Settings.MaxWheelValue = report.Wheel;
-                //WheelHandler.HandlerLog(this, NAME, $"New max wheel value: {Settings.MaxWheelValue}");
+#if DEBUG
+                WheelHandler.HandlerLog(this, NAME, $"New max wheel value: {Settings.MaxWheelValue}", LogLevel.Debug);
+#endif
             }
         }
 

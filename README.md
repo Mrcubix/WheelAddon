@@ -1,6 +1,6 @@
 # Wheel Addon
 
-A plugin for OTD that add support for the touch wheel present in some Wacom tablets
+A plugin for OTD that add support for the Absolute Touch Wheel present in some Wacom tablets
 
 ## Supported Versions
 
