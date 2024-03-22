@@ -60,6 +60,26 @@ else
     exit 1
 fi
 
+# Do a final cleanup, remove all OpenTabletDriver*.pdb files
+
+find ./build/UX -name "OpenTabletDriver*.pdb" -type f -delete
+
+# zip all the files
+
+(
+    cd ./build/UX
+
+    for f in *; do
+        if [ -d "$f" ]; then
+            echo "Zipping $f"
+            (
+                cd "$f"
+                zip -r "../Wheel-Addon.UX-$f.zip" *
+            )
+        fi
+    done
+)
+
 echo ""
 echo "Building Installer"
 echo ""
@@ -74,9 +94,11 @@ else
     exit 1
 fi
 
-mkdir ./build/installer/
-
-rm -rf ./build/installer/*
+if [ ! -d "./build/installer" ]; then
+    mkdir ./build/installer/
+else
+    rm -rf ./build/installer/*
+fi
 
 mv ./temp/installer/Wheel-Addon.Installer.dll ./build/installer/Wheel-Addon.Installer.dll
 
@@ -85,6 +107,45 @@ mv ./temp/installer/Wheel-Addon.Installer.dll ./build/installer/Wheel-Addon.Inst
 zip -r ./build/installer/Wheel-Addon.Installer.zip ./build/installer/*
 
 rm -rf ./temp
+
+echo ""
+echo "Computing Hashes"
+echo ""
+
+# Append all hashes to hashes.txt
+(
+    cd ./build
+
+    output="../hashes.txt"
+
+    (
+        cd ./plugin
+
+        # Compute Plugin Hash
+        sha256sum Wheel-Addon.zip > $output
+    )
+
+    echo "" >> hashes.txt
+
+    (
+        cd ./UX
+
+        # Compute all UX Hashes
+
+        for os in win linux osx; do
+            for arch in x64 x86 arm64; do
+
+                name="Wheel-Addon.UX-$os-$arch.zip"
+
+                echo "Computing $name"
+
+                if [ -f "$name" ]; then
+                    sha256sum $name >> $output
+                fi
+            done
+        done
+    )
+)
 
 echo ""
 echo "Done"
