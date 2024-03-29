@@ -65,7 +65,6 @@ fi
 find ./build/UX -name "OpenTabletDriver*.pdb" -type f -delete
 
 # zip all the files
-
 (
     cd ./build/UX
 
