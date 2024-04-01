@@ -5,6 +5,8 @@ using OpenTabletDriver.Plugin.Attributes;
 using System.IO;
 using System.IO.Compression;
 using System.Threading;
+using System;
+using System.Diagnostics;
 
 namespace WheelAddon.Installer
 {
@@ -29,7 +31,18 @@ namespace WheelAddon.Installer
                 return;
             }
 
-            OTDEnhancedOutputModeDirectory = new($"{pluginsDirectory}/OTD.EnhancedOutputMode");
+            // Look for OTD.EnhancedOutputMode.dll within the plugins directory
+            foreach (var pluginDirectory in pluginsDirectory.GetDirectories())
+            {
+                foreach (var file in pluginDirectory.GetFiles())
+                {
+                    if (file.Name == "OTD.EnhancedOutputMode.dll")
+                    {
+                        OTDEnhancedOutputModeDirectory = pluginDirectory;
+                        return;
+                    }
+                }
+            }
         }
 
         public bool Initialize()
@@ -83,7 +96,7 @@ namespace WheelAddon.Installer
             // last step: remove OTD.Backport.Parsers.dll in any other plugin directory
             foreach (var pluginDirectory in pluginsDirectory.GetDirectories())
             {
-                if (pluginDirectory.Name == "OTD.EnhancedOutputMode")
+                if (pluginDirectory.Name == OTDEnhancedOutputModeDirectory.Name)
                     continue;
 
                 var parserDll = new FileInfo($"{pluginDirectory.FullName}/OTD.Backport.Parsers.dll");

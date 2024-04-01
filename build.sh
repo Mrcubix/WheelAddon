@@ -15,32 +15,37 @@ else
 fi
 
 if [ ! -d "./build" ]; then
-    mkdir ./build
+    mkdir build
 fi
 
 if [ ! -d "./build/plugin" ]; then
-    mkdir ./build/plugin
+    mkdir build/plugin
 else
-    rm -rf ./build/plugin/*
+    rm -rf build/plugin/*
 fi
 
-mv ./temp/plugin/Wheel-Addon.dll ./build/plugin/Wheel-Addon.dll
-mv ./temp/plugin/Wheel-Addon.pdb ./build/plugin/Wheel-Addon.pdb
-mv ./temp/plugin/Wheel-Addon.Lib.dll ./build/plugin/Wheel-Addon.Lib.dll
-mv ./temp/plugin/Wheel-Addon.Lib.pdb ./build/plugin/Wheel-Addon.Lib.pdb
-mv ./temp/plugin/OTD.Backport.Parsers.dll ./build/plugin/OTD.Backport.Parsers.dll
-mv ./temp/plugin/Newtonsoft.Json.dll ./build/plugin/Newtonsoft.Json.dll
-mv ./temp/plugin/StreamJsonRpc.dll ./build/plugin/StreamJsonRpc.dll
+files=("Wheel-Addon.dll" "Wheel-Addon.pdb" "Wheel-Addon.Lib.dll" "Wheel-Addon.Lib.pdb" "OTD.Backport.Parsers.dll" "Newtonsoft.Json.dll" "StreamJsonRpc.dll")
+
+for file in "${files[@]}"; do
+    if [ -f "./temp/plugin/$file" ]; then
+        mv "./temp/plugin/$file" "./build/plugin/$file"
+    fi
+done
 
 rm -rf ./temp/plugin
 
-zip -r ./build/plugin/Wheel-Addon.zip ./build/plugin/*
+(
+    cd ./build/plugin
+
+    # zip all the files
+    zip -r Wheel-Addon.zip *
+)
 
 echo ""
 echo "Building UX"
 echo ""
 
-rm -rf ./build/UX
+rm -rf ./build/UX/*
 
 dotnet publish Wheel-Addon.UX.Desktop -c Release -r win-x64 --self-contained="false" -o ./build/UX/win-x64/ $@ || exit 2
 dotnet publish Wheel-Addon.UX.Desktop -c Release -r win-x86 --self-contained="false" -o ./build/UX/win-x86/ $@ || exit 2
@@ -83,7 +88,7 @@ echo ""
 echo "Building Installer"
 echo ""
 
-dotnet publish Wheel-Addon.Installer -c Release -o ./temp/installer/
+dotnet publish Wheel-Addon.Installer -c Debug -o ./temp/installer/
 
 # if error is 0 then exit
 if [ $? -eq 0 ]; then
@@ -103,7 +108,10 @@ mv ./temp/installer/Wheel-Addon.Installer.dll ./build/installer/Wheel-Addon.Inst
 
 # zip Wheel-Addon.Installer.dll
 
-zip -r ./build/installer/Wheel-Addon.Installer.zip ./build/installer/*
+(
+    cd build/installer
+    zip -r Wheel-Addon.Installer.zip Wheel-Addon.Installer.dll
+)
 
 rm -rf ./temp
 
