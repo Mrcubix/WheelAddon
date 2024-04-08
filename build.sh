@@ -2,17 +2,6 @@
 
 dotnet restore
 
-# Create the file structure
-if [ ! -d "./build" ]; then
-    mkdir build
-fi
-
-if [ ! -d "./build/plugin" ]; then
-    mkdir build/plugin
-else
-    rm -rf build/plugin/*
-fi
-
 echo ""
 echo "Building Plugin"
 echo ""
@@ -71,14 +60,6 @@ echo "Building Installer"
 echo ""
 
 dotnet publish Wheel-Addon.Installer -c Debug -o ./temp/installer/ $@ || exit 1
-
-# if error is 0 then exit
-if [ $? -eq 0 ]; then
-    echo ""
-else
-    echo "Build Failed"
-    exit 1
-fi
 
 if [ ! -d "./build/installer" ]; then
     mkdir ./build/installer/
