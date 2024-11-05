@@ -31,17 +31,17 @@ namespace WheelAddon.UX.ViewModels
         /// <summary>
         ///     Start value of slice, not in degrees nor radians
         /// </summary>
-        public float Start => _wheelBindingDisplayVM.Start;
+        public double Start => _wheelBindingDisplayVM.Start;
 
         /// <summary>
         ///     End value of slice, not in degrees nor radians
         /// </summary>
-        public float End => _wheelBindingDisplayVM.End;
+        public double End => _wheelBindingDisplayVM.End;
 
         /// <summary>
         ///     Max possible value of the wheel, not in degrees nor radians
         /// </summary>
-        public float Max => _wheelBindingDisplayVM.Max;
+        public double Max => _wheelBindingDisplayVM.Max;
 
         public string Color
         {
@@ -101,9 +101,9 @@ namespace WheelAddon.UX.ViewModels
             Console.WriteLine(Data);
         }
 
-        private static float ToRadians(float angle)
+        private static double ToRadians(double angle)
         {
-            return (float) (Math.PI / 180) * angle;
+            return (double) (Math.PI / 180) * angle;
         }
 
     }
