@@ -37,11 +37,13 @@ namespace WheelAddon.Lib.Serializables
             },
             AdvancedMode = new List<SerializableRangedWheelBinding>()
             {
+#if DEBUG
                 new SerializableRangedWheelBinding()
                 {
                     Start = 0,
                     End = 20,
                 }
+#endif
             }
         };
     }
