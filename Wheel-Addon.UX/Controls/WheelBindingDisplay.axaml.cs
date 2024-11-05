@@ -1,8 +1,12 @@
+using System;
 using Avalonia;
+using Avalonia.Controls;
+using OpenTabletDriver.External.Avalonia.ViewModels;
+using OpenTabletDriver.External.Avalonia.Views;
 
 namespace WheelAddon.UX.Controls
 {
-    public partial class WheelBindingDisplay : BindingDisplay
+    public partial class WheelBindingDisplay : UserControl
     {
         private int _start = 0;
         private int _end = 0;
@@ -40,6 +44,33 @@ namespace WheelAddon.UX.Controls
         public WheelBindingDisplay()
         {
             InitializeComponent();
+        }
+
+        // --------------------------------- Methods --------------------------------- //
+
+        protected override void OnDataContextChanged(EventArgs e)
+        {
+            base.OnDataContextChanged(e);
+
+            if (DataContext is BindingDisplayViewModel vm)
+            {
+                vm.ShowBindingEditorDialogRequested += ShowBindingEditorDialog;
+                vm.ShowAdvancedBindingEditorDialogRequested += ShowAdvancedBindingEditorDialog;
+            }
+        }
+
+        private void ShowBindingEditorDialog(object? sender, BindingDisplayViewModel e)
+        {
+            if (DataContext is BindingDisplayViewModel vm)
+                if (TopLevel.GetTopLevel(this) is AppMainWindow window)
+                    window.ShowBindingEditorDialog(sender, vm);
+        }
+
+        private void ShowAdvancedBindingEditorDialog(object? sender, BindingDisplayViewModel e)
+        {
+            if (DataContext is BindingDisplayViewModel vm)
+                if (TopLevel.GetTopLevel(this) is AppMainWindow window)
+                    window.ShowAdvancedBindingEditorDialog(sender, vm);
         }
     }
 }

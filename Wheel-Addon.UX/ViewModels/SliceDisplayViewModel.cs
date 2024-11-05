@@ -1,11 +1,9 @@
 using System;
-using System.Reactive.Linq;
 using Avalonia;
-using ReactiveUI;
 
 namespace WheelAddon.UX.ViewModels
 {
-    public class SliceDisplayViewModel : ViewModelBase
+    public partial class SliceDisplayViewModel : ViewModelBase
     {
         private readonly WheelBindingDisplayViewModel _wheelBindingDisplayVM;
 
@@ -21,13 +19,13 @@ namespace WheelAddon.UX.ViewModels
         public Point Origin
         {
             get => _origin;
-            set => this.RaiseAndSetIfChanged(ref _origin, value);
+            set => SetProperty(ref _origin, value);
         }
 
         public int Radius
         {
             get => _radius;
-            set => this.RaiseAndSetIfChanged(ref _radius, value);
+            set => SetProperty(ref _radius, value);
         }
 
         /// <summary>
@@ -48,13 +46,13 @@ namespace WheelAddon.UX.ViewModels
         public string Color
         {
             get => _color;
-            set => this.RaiseAndSetIfChanged(ref _color, value);
+            set => SetProperty(ref _color, value);
         }
 
         public string Data
         {
             get => _data;
-            set => this.RaiseAndSetIfChanged(ref _data, value);
+            set => SetProperty(ref _data, value);
         }
 
         public SliceDisplayViewModel(WheelBindingDisplayViewModel vm)
@@ -62,10 +60,12 @@ namespace WheelAddon.UX.ViewModels
             _wheelBindingDisplayVM = vm;
 
             // expect an observer as a parameter
-            vm.Changed.Subscribe(_ => UpdateData());
+            vm.PropertyChanged += OnWheelBindingDisplayChanged;
             
             UpdateData();
         }
+
+        private void OnWheelBindingDisplayChanged(object? sender, EventArgs e) => UpdateData();
 
         private void UpdateData()
         {

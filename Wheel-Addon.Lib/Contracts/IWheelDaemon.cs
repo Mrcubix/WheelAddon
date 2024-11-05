@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WheelAddon.Lib.Serializables;
+using OpenTabletDriver.External.Common.Serializables;
 
 namespace WheelAddon.Lib.Contracts
 {

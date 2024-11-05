@@ -16,6 +16,7 @@ using OpenTabletDriver.Desktop.Reflection;
 using WheelAddon.Serializables.Bindings;
 using WheelAddon.Serializables.Modes;
 using System.Threading.Tasks;
+using OpenTabletDriver.External.Common.Serializables;
 
 namespace WheelAddon
 {

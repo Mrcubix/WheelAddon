@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using OpenTabletDriver.External.Common.Serializables;
 
 namespace WheelAddon.Lib.Serializables.Bindings
 {

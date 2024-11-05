@@ -11,5 +11,7 @@
 
     <Application.Styles>
         <FluentTheme />
+        
+        <StyleInclude Source="avares://OpenTabletDriver.External.Avalonia/Themes/Default/Default.axaml" />
     </Application.Styles>
 </Application>

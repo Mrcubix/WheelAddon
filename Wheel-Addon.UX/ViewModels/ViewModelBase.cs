@@ -1,7 +1,7 @@
-﻿using ReactiveUI;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace WheelAddon.UX.ViewModels;
 
-public class ViewModelBase : ReactiveObject
+public partial class ViewModelBase : ObservableObject
 {
 }

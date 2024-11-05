@@ -16,14 +16,21 @@ namespace WheelAddon.UX.Controls
             InitializeComponent();
         }
 
+        protected override void OnDataContextBeginUpdate()
+        {
+            base.OnDataContextBeginUpdate();
+
+            if (DataContext is SliceDisplayViewModel viewModel)
+                viewModel.PropertyChanged -= OnSliceChanged;
+        }
+
         protected override void OnDataContextChanged(EventArgs e)
         {
             base.OnDataContextChanged(e);
 
             if (DataContext is SliceDisplayViewModel viewModel)
             {
-                _subscription = viewModel.Changed
-                    .Subscribe(_ => InvalidateVisual());
+                viewModel.PropertyChanged += OnSliceChanged;
 
                 _brush = Brush.Parse(viewModel.Color);
             }
@@ -33,6 +40,8 @@ namespace WheelAddon.UX.Controls
                 _subscription = null;
             }
         }
+
+        private void OnSliceChanged(object? sender, EventArgs e) => InvalidateVisual();
 
         public override void Render(DrawingContext context)
         {

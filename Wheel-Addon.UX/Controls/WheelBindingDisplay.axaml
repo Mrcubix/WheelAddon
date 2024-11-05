@@ -22,10 +22,10 @@
         <TextBlock Text="{Binding Description}" FontSize="16" VerticalAlignment="Center" Margin="10,0,0,0" Grid.Column="1" />
         <NumericUpDown Minimum="0" Maximum="{Binding Max}" Value="{Binding Start}" FormatString="{}{0:0}" Height="16" Margin="10,0,0,0" Grid.Column="2" />
         <NumericUpDown Minimum="0" Maximum="{Binding Max}" Value="{Binding End}" FormatString="{}{0:0}" Height="16" Margin="10,0,0,0" Grid.Column="3" />
-        <Button Command="{Binding OnShowBindingEditorDialogEvent}" HorizontalAlignment="Stretch" FontSize="16" Margin="10,0,0,0" Grid.Column="4" >
+        <Button Command="{Binding ShowBindingEditorDialog}" HorizontalAlignment="Stretch" FontSize="16" Margin="10,0,0,0" Grid.Column="4" >
             <TextBlock Text="{Binding Content}" FontSize="16" TextAlignment="Center" />
         </Button>
-        <Button Content="..." Command="{Binding OnShowAdvancedBindingEditorDialogEvent}" FontSize="16" Margin="10,0,0,0" Grid.Column="5" />
+        <Button Content="..." Command="{Binding ShowAdvancedBindingEditorDialog}" FontSize="16" Margin="10,0,0,0" Grid.Column="5" />
     </Grid>
 
 </UserControl>

@@ -4,8 +4,8 @@ using System.Linq;
 using Newtonsoft.Json;
 using OpenTabletDriver.Desktop.Reflection;
 using OpenTabletDriver.Plugin;
-using WheelAddon.Lib.Serializables;
 using WheelAddon.Lib.Serializables.Bindings;
+using OpenTabletDriver.External.Common.Serializables;
 
 namespace WheelAddon.Serializables.Bindings
 {

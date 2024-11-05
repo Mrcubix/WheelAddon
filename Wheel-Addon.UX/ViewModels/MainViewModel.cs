@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using Avalonia.Media;
 using WheelAddon.Lib.RPC;
-using ReactiveUI;
 using WheelAddon.Lib.Contracts;
 using WheelAddon.Lib.Serializables;
 using WheelAddon.UX.Extensions;
@@ -14,10 +13,12 @@ using WheelAddon.Lib.Serializables.Modes;
 using Avalonia.Threading;
 using System.IO;
 using System.Threading;
+using OpenTabletDriver.External.Common.Serializables;
+using OpenTabletDriver.External.Avalonia.ViewModels;
 
 namespace WheelAddon.UX.ViewModels;
 
-public class MainViewModel : ViewModelBase
+public partial class MainViewModel : ViewModelBase
 {
     private RpcClient<IWheelDaemon> _rpcClient = null!;
     private string _connectionStateText = "Disconnected";
@@ -47,13 +48,13 @@ public class MainViewModel : ViewModelBase
     public BindingDisplayViewModel ClockWiseBindingDisplay
     {
         get => _clockWiseBindingDisplay;
-        set => this.RaiseAndSetIfChanged(ref _clockWiseBindingDisplay, value);
+        set => SetProperty(ref _clockWiseBindingDisplay, value);
     }
 
     public BindingDisplayViewModel CounterClockWiseBindingDisplay
     {
         get => _counterClockWiseBindingDisplay;
-        set => this.RaiseAndSetIfChanged(ref _counterClockWiseBindingDisplay, value);
+        set => SetProperty(ref _counterClockWiseBindingDisplay, value);
     }
 
     #endregion
@@ -63,25 +64,25 @@ public class MainViewModel : ViewModelBase
     public ObservableCollection<WheelBindingDisplayViewModel> Displays
     {
         get => _displays;
-        set => this.RaiseAndSetIfChanged(ref _displays, value);
+        set => SetProperty(ref _displays, value);
     }
 
     public ObservableCollection<SliceDisplayViewModel> Slices
     {
         get => _slices;
-        set => this.RaiseAndSetIfChanged(ref _slices, value);
+        set => SetProperty(ref _slices, value);
     }
 
     public int LastIndex 
     {
         get => _lastIndex;
-        set => this.RaiseAndSetIfChanged(ref _lastIndex, value);
+        set => SetProperty(ref _lastIndex, value);
     }
 
     public bool IsEmpty
     {
         get => _isEmpty;
-        set => this.RaiseAndSetIfChanged(ref _isEmpty, value);
+        set => SetProperty(ref _isEmpty, value);
     }
 
     #endregion
@@ -91,19 +92,19 @@ public class MainViewModel : ViewModelBase
     public RpcClient<IWheelDaemon> Client
     {
         get => _rpcClient;
-        set => this.RaiseAndSetIfChanged(ref _rpcClient, value);
+        set => SetProperty(ref _rpcClient, value);
     }
 
     public string ConnectionStateText
     {
         get => _connectionStateText;
-        set => this.RaiseAndSetIfChanged(ref _connectionStateText, value);
+        set => SetProperty(ref _connectionStateText, value);
     }
 
     public bool IsConnected
     {
         get => _isConnected;
-        set => this.RaiseAndSetIfChanged(ref _isConnected, value);
+        set => SetProperty(ref _isConnected, value);
     }
 
     #endregion
@@ -113,13 +114,13 @@ public class MainViewModel : ViewModelBase
     public SerializableSettings Settings
     {
         get => _settings;
-        set => this.RaiseAndSetIfChanged(ref _settings, value);
+        set => SetProperty(ref _settings, value);
     }
 
     public ObservableCollection<SerializablePlugin> Plugins
     {
         get => _plugins;
-        set => this.RaiseAndSetIfChanged(ref _plugins, value);
+        set => SetProperty(ref _plugins, value);
     }
 
     #endregion
@@ -129,19 +130,19 @@ public class MainViewModel : ViewModelBase
     public bool IsCalibrating
     {
         get => _isCalibrating;
-        set => this.RaiseAndSetIfChanged(ref _isCalibrating, value);
+        set => SetProperty(ref _isCalibrating, value);
     }
 
     public string CalibrationButtonText
     {
         get => _calibrationButtonText;
-        set => this.RaiseAndSetIfChanged(ref _calibrationButtonText, value);
+        set => SetProperty(ref _calibrationButtonText, value);
     }
 
     public int CurrentMax
     {
         get => _currentMax;
-        set => this.RaiseAndSetIfChanged(ref _currentMax, value);
+        set => SetProperty(ref _currentMax, value);
     }
 
     #endregion
@@ -277,7 +278,7 @@ public class MainViewModel : ViewModelBase
     public event EventHandler<SliceDisplayViewModel> OnSliceAdded;
     public event EventHandler<int> OnSliceRemoved;
 
-    public void OnSliceAddedEvent()
+    public void AddSlice()
     {
         WheelBindingDisplayViewModel lastSlice = null!;
 
@@ -321,9 +322,9 @@ public class MainViewModel : ViewModelBase
         IsEmpty = false;
     }
 
-    public void OnSliceRemovedEvent(int index)
+    public void RemoveSlice(int index)
     {
-        if (index < 1 || index >= _displays.Count)
+        if (index < 0 || index >= _displays.Count)
             return;
 
         // remove the slice
@@ -516,7 +517,10 @@ public class MainViewModel : ViewModelBase
         if (!IsCalibrating)
             return;
 
-        _calibrationCancellationTokenSource?.Cancel();
+        if (_calibrationCancellationTokenSource == null)
+            return;
+
+        await _calibrationCancellationTokenSource.CancelAsync();
 
         int res = -1;
 

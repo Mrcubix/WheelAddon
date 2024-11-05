@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:WheelAddon.UX.Controls"
+             xmlns:extcontrols="clr-namespace:OpenTabletDriver.External.Avalonia.Controls;assembly=OpenTabletDriver.External.Avalonia"
              xmlns:vm="clr-namespace:WheelAddon.UX.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="WheelAddon.UX.Views.MainView"
@@ -25,7 +26,7 @@
         </Style>
 
         <!-- Margin for BindingDisplays inside SimpleModeDisplays need to be 0, 16, 0, 0 -->
-        <Style Selector="#SimpleModeDisplays > controls|BindingDisplay" >
+        <Style Selector="#SimpleModeDisplays > extcontrols|BindingDisplay" >
             <Setter Property="Margin" Value="0, 16, 0, 0" />
         </Style>
     </UserControl.Styles>
@@ -48,8 +49,8 @@
                     <TextBlock Text="Simple Mode" FontSize="20" FontWeight="Bold" />
     
                     <StackPanel Margin="8" Name="SimpleModeDisplays">
-                        <controls:BindingDisplay DataContext="{Binding ClockWiseBindingDisplay}" />
-                        <controls:BindingDisplay DataContext="{Binding CounterClockWiseBindingDisplay}" />
+                        <extcontrols:BindingDisplay DataContext="{Binding ClockWiseBindingDisplay}" />
+                        <extcontrols:BindingDisplay DataContext="{Binding CounterClockWiseBindingDisplay}" />
                     </StackPanel>
     
                 </StackPanel>
@@ -124,10 +125,10 @@
 
             <Grid ColumnDefinitions="*,*" Margin="10,0,16,10" Grid.Row="2">
 
-                <Button Command="{Binding OnSliceAddedEvent}" Margin="10,16,0,0" Grid.Column="0" HorizontalAlignment="Stretch" Background="Green">
+                <Button Command="{Binding AddSlice}" Margin="10,16,0,0" Grid.Column="0" HorizontalAlignment="Stretch" Background="Green">
                     <TextBlock Text="+" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Button>
-                <Button Command="{Binding OnSliceRemovedEvent}" CommandParameter="{Binding LastIndex}" Margin="10,16,0,0" Grid.Column="1" HorizontalAlignment="Stretch" Background="Red" Name="RemoveSliceBtn">
+                <Button Command="{Binding RemoveSlice}" CommandParameter="{Binding LastIndex}" Margin="10,16,0,0" Grid.Column="1" HorizontalAlignment="Stretch" Background="Red" Name="RemoveSliceBtn">
                     <TextBlock Text="-" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Button>
 

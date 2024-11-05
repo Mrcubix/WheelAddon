@@ -13,7 +13,7 @@ fi
 
 dotnet publish Wheel-Addon -c Release -o ./temp/plugin/ $@ || exit 1
 
-files=("Wheel-Addon.dll" "Wheel-Addon.pdb" "Wheel-Addon.Lib.dll" "Wheel-Addon.Lib.pdb" "OTD.Backport.Parsers.dll" "Newtonsoft.Json.dll" "StreamJsonRpc.dll")
+files=("Wheel-Addon.dll" "Wheel-Addon.pdb" "Wheel-Addon.Lib.dll" "Wheel-Addon.Lib.pdb" "OTD.Backport.Parsers.dll" "Newtonsoft.Json.dll" "StreamJsonRpc.dll" "OpenTabletDriver.External.Common.dll")
 
 for file in "${files[@]}"; do
     if [ -f "./temp/plugin/$file" ]; then

@@ -5,6 +5,9 @@ using WheelAddon.UX.ViewModels;
 
 namespace WheelAddon.UX;
 
+#nullable enable
+#pragma warning disable IL2057
+
 public class ViewLocator : IDataTemplate
 {
     public Control? Build(object? data)

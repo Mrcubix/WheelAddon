@@ -1,13 +1,13 @@
 ﻿using System.Drawing;
-using OpenTabletDriver.Desktop.Reflection;
-using ReactiveUI;
-using WheelAddon.Lib.Serializables;
+using CommunityToolkit.Mvvm.ComponentModel;
+using OpenTabletDriver.External.Avalonia.ViewModels;
+using OpenTabletDriver.External.Common.Serializables;
 using WheelAddon.Lib.Serializables.Bindings;
 using WheelAddon.UX.Extensions;
 
 namespace WheelAddon.UX.ViewModels;
 
-public class WheelBindingDisplayViewModel : BindingDisplayViewModel
+public partial class WheelBindingDisplayViewModel : BindingDisplayViewModel
 {
     private string _sliceColor = Color.Black.ToHex();
     private int _start = 0;
@@ -47,7 +47,7 @@ public class WheelBindingDisplayViewModel : BindingDisplayViewModel
     public string SliceColor
     {
         get => _sliceColor;
-        set => this.RaiseAndSetIfChanged(ref _sliceColor, value);
+        set => SetProperty(ref _sliceColor, value);
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ public class WheelBindingDisplayViewModel : BindingDisplayViewModel
     public int Start
     {
         get => _start;
-        set => this.RaiseAndSetIfChanged(ref _start, value);
+        set => SetProperty(ref _start, value);
     }
 
     /// <summary>
@@ -65,7 +65,7 @@ public class WheelBindingDisplayViewModel : BindingDisplayViewModel
     public int End
     {
         get => _end;
-        set => this.RaiseAndSetIfChanged(ref _end, value);
+        set => SetProperty(ref _end, value);
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ public class WheelBindingDisplayViewModel : BindingDisplayViewModel
     public int Max
     {
         get => _max;
-        set => this.RaiseAndSetIfChanged(ref _max, value);
+        set => SetProperty(ref _max, value);
     }
 
     public SerializableRangedWheelBinding ToAdvancedWheelBinding()
