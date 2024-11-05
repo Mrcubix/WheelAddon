@@ -42,7 +42,7 @@
         <Grid RowDefinitions="*,Auto,*" Grid.Column="0">
 
             <!--                     Simple Mode                     -->
-            <Grid RowDefinitions="Auto,*,Auto" Grid.Row="0" Margin="16">
+            <Grid RowDefinitions="Auto,*,Auto" Grid.Row="0" Margin="16" IsEnabled="{Binding IsConnected}">
 
                 <StackPanel Grid.Row="0" Margin="16" Grid.IsSharedSizeScope="True">
 
@@ -75,7 +75,7 @@
             <Separator Grid.Row="1" />
 
             <!--                     Display of Advanced Mode                     -->
-            <Grid RowDefinitions="*" Grid.Row="2" Margin="16">
+            <Grid RowDefinitions="*" Grid.Row="2" Margin="16" IsEnabled="{Binding IsConnected}">
 
                 <!-- Containes a shape representing the wheel -->
                 <Canvas Width="200" Height="200" Margin="0, 0, 0, 16" Name="WheelCanvas" Grid.Row="0">
@@ -106,7 +106,7 @@
 
         <!--                     Advanced Mode                     -->
 
-        <Grid RowDefinitions="Auto,*,Auto" Grid.Column="2" Margin="16">
+        <Grid RowDefinitions="Auto,*,Auto" Grid.Column="2" Margin="16" IsEnabled="{Binding IsConnected}">
 
             <TextBlock Text="Advanced Mode" FontSize="20" FontWeight="Bold" Grid.Row="0" />
 

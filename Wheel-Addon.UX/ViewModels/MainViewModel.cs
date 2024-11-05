@@ -181,7 +181,7 @@ public partial class MainViewModel : ViewModelBase
                 Dispatcher.UIThread.Post(() => BuildInterface(Settings));
             }
 
-            IsConnected = true;
+            Dispatcher.UIThread.Post(() => IsConnected = true);
         });
 
         Client.Connecting += (sender, args) =>
