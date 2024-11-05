@@ -9,7 +9,7 @@ A plugin for OTD that add support for the Absolute Touch Wheel present in some W
 ## Dependencies
 
 - [.NET 5 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/5.0#:~:text=x86-,.NET%20Desktop%20Runtime%205.0.17,-The%20.NET%20Desktop) (for OpenTabletDriver 0.5.x)
-- [.NET 7 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/7.0#:~:text=x86-,.NET%20Desktop%20Runtime) (for Wheel Addon's interface)
+- [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0#:~:text=Arm64-,.NET%20Desktop%20Runtime%208.0.) (for Wheel Addon's interface)
 - [OpenTabletDriver 0.5.3.3](https://github.com/OpenTabletDriver/OpenTabletDriver/releases/tag/v0.5.3.3)
 - [OTD.Backport](https://github.com/Mrcubix/OTD.Backport)
 - [OTD.EnhancedOutputMode](https://github.com/Mrcubix/OTD.EnhancedOutputMode)
