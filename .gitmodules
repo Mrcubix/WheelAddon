@@ -7,3 +7,6 @@
 [submodule ".modules/OTD.Backport"]
 	path = .modules/OTD.Backport
 	url = git@github.com:Mrcubix/OTD.Backport.git
+[submodule ".modules/OpenTabletDriver.External.Avalonia"]
+	path = .modules/OpenTabletDriver.External
+	url = https://github.com/Mrcubix/OpenTabletDriver.External.git
