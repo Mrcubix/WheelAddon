@@ -154,11 +154,11 @@
                 </Button>
             </StackPanel>
 
-            <Button Command="{Binding OnApplyEvent}" Margin="8,0,0,0" HorizontalAlignment="Stretch" Grid.Column="3">
+            <Button Command="{Binding ApplySettings}" Margin="8,0,0,0" HorizontalAlignment="Stretch" Grid.Column="3" IsEnabled="{Binding IsConnected}">
                 <TextBlock Text="Apply" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Button>
 
-            <Button Command="{Binding OnSaveEvent}" Margin="8,0,0,0" HorizontalAlignment="Stretch" Grid.Column="4">
+            <Button Command="{Binding SaveSettings}" Margin="8,0,0,0" HorizontalAlignment="Stretch" Grid.Column="4" IsEnabled="{Binding IsConnected}">
                 <TextBlock Text="Save" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Button>
 

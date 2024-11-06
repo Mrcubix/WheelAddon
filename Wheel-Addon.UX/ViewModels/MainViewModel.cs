@@ -363,7 +363,7 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    public void OnApplyEvent()
+    public void ApplySettings()
     {
         if (!Client.IsConnected)
             return;
@@ -402,7 +402,7 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    public void OnSaveEvent()
+    public void SaveSettings()
     {
         if (!Client.IsConnected)
             return;
