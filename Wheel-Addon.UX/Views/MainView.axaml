@@ -29,6 +29,11 @@
         <Style Selector="#SimpleModeDisplays > extcontrols|BindingDisplay" >
             <Setter Property="Margin" Value="0, 16, 0, 0" />
         </Style>
+
+        <Style Selector="TextBlock:disabled" >
+            <Setter Property="Foreground" Value="Gray" />
+        </Style>
+
     </UserControl.Styles>
 
     <Grid ColumnDefinitions="*,Auto,*,Auto">
