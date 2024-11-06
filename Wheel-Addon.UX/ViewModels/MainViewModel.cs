@@ -183,6 +183,7 @@ public partial class MainViewModel : ViewModelBase
             }
 
             Dispatcher.UIThread.Post(() => IsConnected = true);
+            _isConnecting = false;
         });
 
         Client.Connecting += (sender, args) =>
