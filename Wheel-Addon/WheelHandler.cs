@@ -8,7 +8,7 @@ using OpenTabletDriver.Plugin;
 using OpenTabletDriver.Plugin.Logging;
 using System.Threading.Tasks;
 using System.Threading;
-using WheelAddon.RPC;
+using OpenTabletDriver.External.Common.RPC;
 
 namespace WheelAddon.Filter
 {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using Avalonia.Media;
-using WheelAddon.Lib.RPC;
 using WheelAddon.Lib.Contracts;
 using WheelAddon.Lib.Serializables;
 using WheelAddon.UX.Extensions;
@@ -15,6 +14,7 @@ using System.IO;
 using System.Threading;
 using OpenTabletDriver.External.Common.Serializables;
 using OpenTabletDriver.External.Avalonia.ViewModels;
+using OpenTabletDriver.External.Common.RPC;
 
 namespace WheelAddon.UX.ViewModels;
 
