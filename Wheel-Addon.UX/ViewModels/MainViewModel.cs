@@ -35,6 +35,7 @@ public partial class MainViewModel : ViewModelBase
     private ObservableCollection<SerializablePlugin> _plugins = null!;
 
     private bool _isConnected = false;
+    private bool _isConnecting = false;
 
     private bool _isCalibrating = false;
     private string _calibrationButtonText = "Calibrate";
@@ -187,6 +188,7 @@ public partial class MainViewModel : ViewModelBase
         Client.Connecting += (sender, args) =>
         {
             ConnectionStateText = "Connecting...";
+            _isConnecting = true;
         };
 
         Client.Disconnected += (sender, args) =>
@@ -347,7 +349,7 @@ public partial class MainViewModel : ViewModelBase
 
     private async Task ConnectRpcAsync()
     {
-        if (!Client.IsConnected)
+        if (Client.IsConnected == false && _isConnecting == false)
         {
             try
             {
