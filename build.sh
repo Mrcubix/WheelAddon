@@ -18,15 +18,14 @@ echo ""
 
 rm -rf ./build/UX/*
 
-dotnet publish Wheel-Addon.UX.Desktop -c Release -r win-x64 --self-contained="false" -o ./build/UX/win-x64/ $@ || exit 1
-dotnet publish Wheel-Addon.UX.Desktop -c Release -r win-x86 --self-contained="false" -o ./build/UX/win-x86/ $@ || exit 1
-dotnet publish Wheel-Addon.UX.Desktop -c Release -r win-arm64 --self-contained="false" -o ./build/UX/win-arm64/ $@ || exit 1
+runtimes=("win-x64" "win-x86" "win-arm64" "linux-x64" "linux-arm64" "osx-x64" "osx-arm64")
 
-dotnet publish Wheel-Addon.UX.Desktop -c Release -r linux-x64 --self-contained="false" -o ./build/UX/linux-x64/ $@ || exit 1
-dotnet publish Wheel-Addon.UX.Desktop -c Release -r linux-arm64 --self-contained="false" -o ./build/UX/linux-arm64/ $@ || exit 1
-
-dotnet publish Wheel-Addon.UX.Desktop -c Release -r osx-x64 --self-contained="false" -o ./build/UX/osx-x64/ $@ || exit 1
-dotnet publish Wheel-Addon.UX.Desktop -c Release -r osx-arm64 --self-contained="false" -o ./build/UX/osx-arm64/ $@ || exit 1
+for runtime in "${runtimes[@]}"; do
+    if ! dotnet publish Wheel-Addon.UX -c Release -r $runtime --self-contained="false" -o ./build/UX/$runtime $@; then
+        echo "Building the UX Failed for $runtime"
+        exit 1
+    fi
+done
 
 # if error is 0 then exit
 if [ $? -eq 0 ]; then
