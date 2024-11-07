@@ -15,12 +15,12 @@ namespace WheelAddon
 {
     public class Settings
     {
-        private static readonly JsonSerializer serializer = new()
+        private static readonly JsonSerializer _serializer = new()
         {
             Formatting = Formatting.Indented,
         };
         
-        private static readonly JsonSerializerSettings serializerSettings = new()
+        private static readonly JsonSerializerSettings _serializerSettings = new()
         {
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore,
@@ -61,7 +61,7 @@ namespace WheelAddon
             {
                 try
                 {
-                    settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(path), serializerSettings)!;
+                    settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(path), _serializerSettings)!;
 
                     return true;
                 }
@@ -82,22 +82,8 @@ namespace WheelAddon
 
         public void ConstructBindings()
         {
-            ConstructSimpleModeBindings();
-
+            SimpleMode.Construct();
             ConstructAdvancedModeBindings();
-        }
-
-        public void ConstructSimpleModeBindings()
-        {
-            // simple mode
-            var simpleMode = this.SimpleMode;
-
-            //var clockWisePlugin = plugins.FirstOrDefault(p => p.FullName == simpleMode.CounterClockwise.Store?.Path);
-
-            //Log.Debug("L", $"Clockwise plugin: {clockWisePlugin?.FullName}");
-
-            simpleMode.Clockwise.Binding = simpleMode.Clockwise.Store?.Construct<IBinding>();
-            simpleMode.CounterClockwise.Binding = simpleMode.CounterClockwise.Store?.Construct<IBinding>();
         }
 
         public void ConstructAdvancedModeBindings()
@@ -105,12 +91,8 @@ namespace WheelAddon
             // advanced mode
             var advancedMode = this.AdvancedMode;
 
-            for (var i = 0; i < advancedMode.Count; i++)
-            {
-                var rengedBinding = advancedMode[i];
-
-                rengedBinding.Binding = rengedBinding.Store?.Construct<IBinding>();
-            }
+            foreach (var advancedBinding in advancedMode)
+                advancedBinding.Construct();
         }
 
         public SerializableSettings ToSerializable(Dictionary<int, TypeInfo> identifierToPlugin)

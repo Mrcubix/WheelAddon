@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json;
@@ -28,6 +27,12 @@ namespace WheelAddon.Serializables.Modes
 
         [JsonProperty("ActionValue")]
         public int ActionValue { get; set; } = 20;
+
+        public void Construct()
+        {
+            Clockwise.Construct();
+            CounterClockwise.Construct();
+        }
 
         public SerializableSimpleModeWheelBindings ToSerializable(Dictionary<int, TypeInfo> identifierToPlugin)
         {

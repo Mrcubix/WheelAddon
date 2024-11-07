@@ -6,10 +6,11 @@ using OpenTabletDriver.Desktop.Reflection;
 using OpenTabletDriver.Plugin;
 using WheelAddon.Lib.Serializables.Bindings;
 using OpenTabletDriver.External.Common.Serializables;
+using WheelAddon.Lib.Binding;
 
 namespace WheelAddon.Serializables.Bindings
 {
-    public class WheelBinding
+    public class WheelBinding : Binding
     {
         [JsonConstructor]
         public WheelBinding()
@@ -27,7 +28,13 @@ namespace WheelAddon.Serializables.Bindings
         [JsonIgnore]
         public IBinding? Binding { get; set; }
 
-        public SerializableWheelBinding ToSerializable(Dictionary<int, TypeInfo> identifierToPlugin)
+        public override void Press() => Binding?.Press();
+
+        public override void Release() => Binding?.Release();
+
+        public override void Construct() => Binding = Store?.Construct<IBinding>();
+
+        public override SerializableWheelBinding ToSerializable(Dictionary<int, TypeInfo> identifierToPlugin)
         {
             var identifier = identifierToPlugin.FirstOrDefault(x => x.Value.FullName == Store?.Path);
             var value = Store?.Settings.FirstOrDefault(x => x.Property == "Property");

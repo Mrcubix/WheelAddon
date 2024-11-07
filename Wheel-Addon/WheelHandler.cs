@@ -9,6 +9,7 @@ using OpenTabletDriver.Plugin.Logging;
 using System.Threading.Tasks;
 using System.Threading;
 using OpenTabletDriver.External.Common.RPC;
+using WheelAddon.Lib.Binding;
 
 namespace WheelAddon.Filter
 {
@@ -191,15 +192,10 @@ namespace WheelAddon.Filter
 
         public void HandleSimpleModeAction(object? sender, bool isClockwise)
         {
-            var simpleMode = settings.SimpleMode;
-
-            IBinding? binding = isClockwise ? simpleMode.Clockwise.Binding : simpleMode.CounterClockwise.Binding;
-
-            if (binding == null)
-                return;
-
-            // press the binding
-            PressMomentarily(binding);
+            if (isClockwise)
+                settings.SimpleMode.Clockwise?.Invoke();
+            else
+                settings.SimpleMode.CounterClockwise?.Invoke();
         }
 
         #endregion
@@ -244,29 +240,7 @@ namespace WheelAddon.Filter
             }
         }
 
-        public void HandleAdvancedModeAction(int index)
-        {
-            var advancedMode = settings.AdvancedMode;
-
-            // get the binding
-            var binding = advancedMode[index].Binding;
-
-            if (binding == null)
-                return;
-
-            // press the binding
-            PressMomentarily(binding);
-        }
-
-        public void PressMomentarily(IBinding binding)
-        {
-            _ = Task.Run(async () =>
-            {
-                binding.Press();
-                await Task.Delay(15);
-                binding.Release();
-            });
-        }
+        public void HandleAdvancedModeAction(int index) => settings.AdvancedMode[index]?.Invoke();
 
         #endregion
 

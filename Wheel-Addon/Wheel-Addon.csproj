@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <!-- OpenTabletDriver.Desktop -->
-    <!--<ProjectReference Include="../.modules/OTD.EnhancedOutputMode/.modules/OpenTabletDriver/OpenTabletDriver.Desktop/OpenTabletDriver.Desktop.csproj" />-->
+    <ProjectReference Include="../.modules/OTD.EnhancedOutputMode/.modules/OpenTabletDriver/OpenTabletDriver.Desktop/OpenTabletDriver.Desktop.csproj" />
     <!-- OTD.EnhancedOutputMode.Lib -->
     <ProjectReference Include="../.modules/OTD.EnhancedOutputMode/OTD.EnhancedOutputMode.Lib/OTD.EnhancedOutputMode.Lib.csproj" />
     <!-- OTD.Backport -->

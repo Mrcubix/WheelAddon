@@ -25,7 +25,7 @@ namespace WheelAddon.Serializables.Bindings
         [JsonProperty("End")]
         public int End { get; set; } = 0;
 
-        public new SerializableRangedWheelBinding ToSerializable(Dictionary<int, TypeInfo> identifierToPlugin)
+        public override SerializableRangedWheelBinding ToSerializable(Dictionary<int, TypeInfo> identifierToPlugin)
         {
             var serializableWheelBinding = base.ToSerializable(identifierToPlugin);
 
